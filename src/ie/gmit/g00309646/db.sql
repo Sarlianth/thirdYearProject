@@ -35,6 +35,7 @@ create table users (
 	surname varchar(60) NOT NULL,
 	username varchar(60) NOT NULL,
 	password varchar(60) NOT NULL,
+	is_admin boolean DEFAULT false,
 	PRIMARY KEY (id)
 );
 
@@ -43,8 +44,8 @@ ALTER TABLE ticket ADD CONSTRAINT ticket_fk0 FOREIGN KEY (bus_id) REFERENCES bus
 ALTER TABLE ticket ADD CONSTRAINT ticket_fk1 FOREIGN KEY (user_id) REFERENCES users(id);
 
 INSERT INTO users VALUES 
-(1, "Adrian", "Sypos", "admin", "admin"), 
-(2, "John", "Murphy", "user", "pass");
+(1, "Adrian", "Sypos", "admin", "admin", true), 
+(2, "John", "Murphy", "user", "pass", false);
 
 INSERT INTO bus_table VALUES 
 (1, "X1", "Galway", "Dublin", "12.00am"),

@@ -16,8 +16,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+
 import java.awt.Color;
 import javax.swing.JComboBox;
+import java.awt.Font;
 
 public class mainWindow extends JFrame {
 
@@ -33,7 +36,17 @@ public class mainWindow extends JFrame {
 	private static JLabel lblAvailableBus = new JLabel("Available bus: ");
 	private static ArrayList<String> availableBuses = new ArrayList<String>();
 	private static JComboBox comboBox_2 = new JComboBox();
-
+	private static JTabbedPane tabbedPane;
+	private static JPanel panel_2 = new JPanel();
+	private static JPanel panel_1 = new JPanel();
+	private static JPanel panel_3 = new JPanel();
+	private static JPanel panel = new JPanel();
+	private JButton btnSubmit = new JButton("Search");
+	private JButton button = new JButton("Logout");
+	private JButton btnSelect = new JButton("Select");
+	private JLabel lblNewLabel = new JLabel("Source station:");
+	private	JLabel lblDestination = new JLabel("Destination:");
+		
 	/**
 	 * Launch the application.
 	 */
@@ -42,7 +55,7 @@ public class mainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					mainWindow frame = new mainWindow();
+					mainWindow frame = new mainWindow(false);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -50,14 +63,57 @@ public class mainWindow extends JFrame {
 				}
 			}
 		});
-	}
+	}//main
 	
 
 	/**
 	 * Create the frame.
 	 */
-	public mainWindow() {
+	public mainWindow(boolean if_admin) {
+		setResizable(false);
+		setBackground(Color.DARK_GRAY);
+		setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		setTitle("IrishBusApp");
+		setForeground(Color.WHITE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 576, 339);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
 		
+		//////////////////////////////////////////////
+		///////SETUP TABBED PANE AND PANELS//////////
+		/////////////////////////////////////////////
+		UIManager.put("TabbedPane.selected", Color.getHSBColor(300,150,200));
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setForeground(Color.WHITE);
+		tabbedPane.setBackground(Color.DARK_GRAY);
+		tabbedPane.setBounds(10, 11, 447, 284);
+		contentPane.add(tabbedPane);
+		
+		tabbedPane.addTab("Reservation", panel);
+		tabbedPane.addTab("Bus management", panel_1);
+		tabbedPane.addTab("Admin panel", panel_2);
+		tabbedPane.addTab("Tickets", panel_3);
+		
+		panel.setLayout(null);
+		panel_1.setLayout(null);
+		panel_2.setLayout(null);
+		panel_3.setLayout(null);
+		
+		panel.setBackground(Color.DARK_GRAY);
+		panel_1.setBackground(Color.DARK_GRAY);
+		panel_2.setBackground(Color.DARK_GRAY);
+		panel_3.setBackground(Color.DARK_GRAY);
+		
+		//if current user does not have administrator privileges disable the admin panel tab 
+		if(!if_admin){
+			tabbedPane.setEnabledAt(2, false);
+		}
+		
+		//get the bus stations from database and populate them into array lists
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
 			Statement stmt = conn.createStatement();
@@ -78,32 +134,16 @@ public class mainWindow extends JFrame {
 	    	  ex.printStackTrace();
 	      }
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 576, 467);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBackground(Color.GRAY);
-		tabbedPane.setBounds(10, 11, 447, 406);
-		contentPane.add(tabbedPane);
-		
-		JPanel panel = new JPanel();
-		tabbedPane.addTab("Reservation", null, panel, null);
-		panel.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Source station:");
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setBounds(10, 26, 91, 19);
 		panel.add(lblNewLabel);
-		
-		JLabel lblDestination = new JLabel("Destination:");
+	
+		lblDestination.setForeground(Color.WHITE);
 		lblDestination.setBounds(239, 28, 79, 14);
 		panel.add(lblDestination);
 		
-		
-		comboBox.setBounds(96, 25, 118, 20);
+		comboBox.setBounds(111, 25, 118, 20);
 		panel.add(comboBox);
 		comboBox.setModel(new DefaultComboBoxModel(sourceStations.toArray()));
 		
@@ -111,7 +151,37 @@ public class mainWindow extends JFrame {
 		panel.add(comboBox_1);
 		comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
 		
-		JButton btnSubmit = new JButton("Search");
+		btnSubmit.setBounds(114, 61, 317, 23);
+		panel.add(btnSubmit);
+		lblAvailableBus.setForeground(Color.WHITE);
+		
+		lblAvailableBus.setBounds(10, 96, 91, 19);
+		panel.add(lblAvailableBus);
+		
+		comboBox_2.setBounds(114, 95, 317, 20);
+		panel.add(comboBox_2);
+
+		btnSelect.setBounds(114, 123, 317, 23);
+		panel.add(btnSelect);
+		
+		button.setBounds(467, 35, 88, 261);
+		contentPane.add(button);
+		
+		//////////////////////////////////////////////
+		///////LOGOUT BUTTON ACTION LISTENER/////////
+		/////////////////////////////////////////////
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				finish();
+				login frame = new login();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
+	
+		//////////////////////////////////////////////
+		///////SUBMIT BUTTON ACTION LISTENER/////////
+		/////////////////////////////////////////////
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -158,47 +228,9 @@ public class mainWindow extends JFrame {
 				
 			}
 		});
-		btnSubmit.setBounds(96, 61, 335, 23);
-		panel.add(btnSubmit);
-		
-		lblAvailableBus.setBounds(10, 96, 91, 19);
-		panel.add(lblAvailableBus);
-		
-		comboBox_2.setBounds(96, 95, 335, 20);
-		panel.add(comboBox_2);
-		
-		JButton btnSelect = new JButton("Select");
-		btnSelect.setBounds(96, 123, 335, 23);
-		panel.add(btnSelect);
-		
-		
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Bus management", null, panel_1, null);
-		panel_1.setLayout(null);
-		
-		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("Admin panel", null, panel_2, null);
-		panel_2.setLayout(null);
-		
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Tickets", null, panel_3, null);
-		panel_3.setLayout(null);
-		
-		JButton button = new JButton("Logout");
-		button.setBounds(467, 35, 88, 382);
-		contentPane.add(button);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				finish();
-				login frame = new login();
-				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
-			}
-		});
-	
     }
 	
-
+	
 	
 	public void finish(){
 		this.dispose();

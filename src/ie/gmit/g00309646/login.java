@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Color;
 import javax.swing.JPasswordField;
+import java.awt.Font;
 
 public class login extends JFrame {
 
@@ -59,10 +60,13 @@ public class login extends JFrame {
 	 * Create the frame.
 	 */
 	public login() {
+		setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		setResizable(false);
+		setTitle("IrishBusApp - Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 252, 142);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.GRAY);
+		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -73,6 +77,7 @@ public class login extends JFrame {
 				
 				String guiUser, guiPass, dbUser = null, dbPass = null, dbName = null;
 				char[] pass;
+				boolean is_admin;
 				
 				guiUser = inputUsername.getText();;
 				pass = passwordField.getPassword();
@@ -82,7 +87,7 @@ public class login extends JFrame {
 				
 				try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); Statement stmt = conn.createStatement();){
 
-					 String strSelect = "select name, username, password from users";
+					 String strSelect = "select name, username, password, is_admin from users";
 			 
 			         ResultSet rset = stmt.executeQuery(strSelect);
 			 
@@ -92,16 +97,29 @@ public class login extends JFrame {
 			        	dbName = rset.getString("name");
 			            dbUser = rset.getString("username");
 			            dbPass = rset.getString("password");
+			            is_admin = rset.getBoolean("is_admin");
 			            //System.out.println(dbUser);
 			            //System.out.println(dbPass);
 			            
 			            if(guiUser.equalsIgnoreCase(dbUser) && guiPass.equalsIgnoreCase(dbPass)){
-			            	JOptionPane.showMessageDialog(null, "Hi, " + dbName + ".");
-			            	hideLogin();
-			            	mainWindow f = new mainWindow();
-			            	f.setLocationRelativeTo(null);
-			            	f.setVisible(true);
-			            	break;
+			            	if(is_admin){
+			            		JOptionPane.showMessageDialog(null, "Hi, " + dbName + "." + "You have admin privileges.");
+			            		hideLogin();
+				            	mainWindow f = new mainWindow(true);
+				            	f.setLocationRelativeTo(null);
+				            	f.setVisible(true);
+				            	break;
+			            	}
+			            	else{
+			            		JOptionPane.showMessageDialog(null, "Hi, " + dbName + ".");
+			            		hideLogin();
+				            	mainWindow f = new mainWindow(false);
+				            	f.setLocationRelativeTo(null);
+				            	f.setVisible(true);
+				            	break;
+			            	}
+			            	
+			            	
 			            }
 			         }
 			         
