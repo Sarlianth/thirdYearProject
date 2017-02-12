@@ -191,6 +191,7 @@ public class mainWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				finish();
 				login frame = new login();
+				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}
 		});

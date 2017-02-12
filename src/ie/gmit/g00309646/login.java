@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Color;
+import javax.swing.JPasswordField;
 
 public class login extends JFrame {
 
@@ -25,8 +26,8 @@ public class login extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField inputUsername;
-	private JTextField inputPassword;
 	private static JButton btnNewButton;
+	private JPasswordField passwordField;
 
 	/**
 	 * Launch the application.
@@ -59,7 +60,7 @@ public class login extends JFrame {
 	 */
 	public login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 298, 170);
+		setBounds(100, 100, 252, 142);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,29 +71,32 @@ public class login extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				String guiUser, guiPass, dbUser = null, dbPass = null;
+				String guiUser, guiPass, dbUser = null, dbPass = null, dbName = null;
+				char[] pass;
 				
-				guiUser = inputUsername.getText();
-				guiPass = inputPassword.getText();
+				guiUser = inputUsername.getText();;
+				pass = passwordField.getPassword();
+				guiPass = String.valueOf(pass);;
 				
-				System.out.println(guiUser+" "+guiPass);
+				//System.out.println(guiUser+" "+guiPass);
 				
 				try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); Statement stmt = conn.createStatement();){
 
-					 String strSelect = "select username, password from users";
+					 String strSelect = "select name, username, password from users";
 			 
 			         ResultSet rset = stmt.executeQuery(strSelect);
 			 
 			         // Step 4: Process the ResultSet by scrolling the cursor forward via next().
 			         // For each row, retrieve the contents of the cells with getXxx(columnName).
 			         while(rset.next()) {   // Move the cursor to the next row, return false if no more row
+			        	dbName = rset.getString("name");
 			            dbUser = rset.getString("username");
 			            dbPass = rset.getString("password");
-			            System.out.println(dbUser);
-			            System.out.println(dbPass);
+			            //System.out.println(dbUser);
+			            //System.out.println(dbPass);
 			            
 			            if(guiUser.equalsIgnoreCase(dbUser) && guiPass.equalsIgnoreCase(dbPass)){
-			            	JOptionPane.showMessageDialog(null, "Successful login..");
+			            	JOptionPane.showMessageDialog(null, "Hi, " + dbName + ".");
 			            	hideLogin();
 			            	mainWindow f = new mainWindow();
 			            	f.setLocationRelativeTo(null);
@@ -111,39 +115,39 @@ public class login extends JFrame {
 				
 			}
 		});
-		btnNewButton.setBounds(33, 73, 100, 50);
+		btnNewButton.setBounds(10, 70, 100, 24);
 		contentPane.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Exit");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "Thank you for using this software.");
 				System.exit(0);
 			}
 		});
 		
 		
-		btnNewButton_1.setBounds(143, 73, 100, 50);
+		btnNewButton_1.setBounds(120, 70, 100, 24);
 		contentPane.add(btnNewButton_1);
 		
 		inputUsername = new JTextField();
-		inputUsername.setBounds(99, 11, 144, 20);
+		inputUsername.setBounds(76, 11, 144, 20);
 		contentPane.add(inputUsername);
 		inputUsername.setColumns(10);
 		
-		inputPassword = new JTextField();
-		inputPassword.setBounds(99, 42, 144, 20);
-		contentPane.add(inputPassword);
-		inputPassword.setColumns(10);
-		
 		JLabel lblUsername = new JLabel("Username:");
 		lblUsername.setForeground(Color.WHITE);
-		lblUsername.setBounds(33, 14, 66, 14);
+		lblUsername.setBounds(10, 14, 66, 14);
 		contentPane.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setForeground(Color.WHITE);
-		lblPassword.setBounds(33, 45, 66, 14);
+		lblPassword.setBounds(10, 45, 66, 14);
 		contentPane.add(lblPassword);
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(76, 42, 144, 20);
+		contentPane.add(passwordField);
 	}
 	
 	public void hideLogin(){
