@@ -1,14 +1,10 @@
 package ie.gmit.g00309646;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,11 +15,14 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Color;
 
 public class login extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField inputUsername;
 	private JTextField inputPassword;
@@ -37,6 +36,7 @@ public class login extends JFrame {
 			public void run() {
 				try {
 					login frame = new login();
+				    frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
 					try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); Statement stmt = conn.createStatement();){
@@ -95,6 +95,7 @@ public class login extends JFrame {
 			            	JOptionPane.showMessageDialog(null, "Successful login..");
 			            	hideLogin();
 			            	mainWindow f = new mainWindow();
+			            	f.setLocationRelativeTo(null);
 			            	f.setVisible(true);
 			            	break;
 			            }
@@ -146,9 +147,6 @@ public class login extends JFrame {
 	}
 	
 	public void hideLogin(){
-		this.setVisible(false);
-	}
-	public void showLogin(){
-		this.setVisible(true);
+		this.dispose();
 	}
 }

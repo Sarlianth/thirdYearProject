@@ -10,6 +10,7 @@ create table bus_table (
 	bus_number varchar(30) NOT NULL,
 	depart_from varchar(60) NOT NULL,
 	going_to varchar(60) NOT NULL,
+	bus_time varchar(10) NOT NULL,
 	PRIMARY KEY (bus_id)
 );
 
@@ -46,9 +47,15 @@ INSERT INTO users VALUES
 (2, "John", "Murphy", "user", "pass");
 
 INSERT INTO bus_table VALUES 
-(1, "X1", "Galway", "Dublin"),
-(2, "X1", "Dublin", "Galway"),
-(3, "X2", "Galway", "Cork"),
-(4, "X2", "Cork", "Galway"),
-(5, "X3", "Galway", "Limerick"),
-(6, "X3", "Limerick", "Galway");
+(1, "X1", "Galway", "Dublin", "12.00am"),
+(2, "X2", "Galway", "Cork", "12.00am"),
+(3, "X3", "Galway", "Limerick", "12.00am"),
+(4, "X1", "Dublin", "Galway", "12.00am"),
+(5, "X4", "Dublin", "Cork", "12.00am"),
+(6, "X5", "Dublin", "Limerick", "12.00am"),
+(7, "X2", "Cork", "Galway", "12.00am"),
+(8, "X4", "Cork", "Dublin", "12.00am"),
+(9, "X6", "Cork", "Limerick", "12.00am"),
+(10, "X3", "Limerick", "Galway", "12.00am"),
+(11, "X5", "Limerick", "Dublin", "12.00am"),
+(12, "X6", "Limerick", "Cork", "12.00am");
