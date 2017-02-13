@@ -11,9 +11,11 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -21,6 +23,12 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.Font;
+import javax.swing.JTable;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.ListSelectionModel;
+import javax.swing.JScrollPane;
 
 public class mainWindow extends JFrame {
 
@@ -46,6 +54,8 @@ public class mainWindow extends JFrame {
 	private JButton btnSelect = new JButton("Select");
 	private JLabel lblNewLabel = new JLabel("Source station:");
 	private	JLabel lblDestination = new JLabel("Destination:");
+	private final JScrollPane scrollPane = new JScrollPane();
+	private JTable table;
 		
 	/**
 	 * Launch the application.
@@ -76,7 +86,7 @@ public class mainWindow extends JFrame {
 		setTitle("IrishBusApp");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 576, 339);
+		setBounds(100, 100, 673, 343);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -90,7 +100,7 @@ public class mainWindow extends JFrame {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setForeground(Color.WHITE);
 		tabbedPane.setBackground(Color.DARK_GRAY);
-		tabbedPane.setBounds(10, 11, 447, 284);
+		tabbedPane.setBounds(10, 11, 549, 295);
 		contentPane.add(tabbedPane);
 		
 		tabbedPane.addTab("Reservation", panel);
@@ -105,6 +115,33 @@ public class mainWindow extends JFrame {
 		
 		panel.setBackground(Color.DARK_GRAY);
 		panel_1.setBackground(Color.DARK_GRAY);
+		scrollPane.setEnabled(false);
+		scrollPane.setBounds(10, 85, 524, 171);
+		
+		panel_1.add(scrollPane);
+		
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Statement stmt = conn.createStatement();
+			
+			String strSelect = "select * from bus_table";
+	 
+	        ResultSet rset = stmt.executeQuery(strSelect);
+	 
+	        table = new JTable(buildTableModel(rset));
+	        scrollPane.setViewportView(table);
+	        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        table.setEnabled(false);
+	        table.setForeground(Color.WHITE);
+			table.setBorder(null);
+			table.setBackground(Color.GRAY);
+			table.setBounds(10, 11, 192, 63);
+	       
+	        
+	      } catch(SQLException ex) {
+	    	  ex.printStackTrace();
+	      }
+	
 		panel_2.setBackground(Color.DARK_GRAY);
 		panel_3.setBackground(Color.DARK_GRAY);
 		
@@ -132,7 +169,7 @@ public class mainWindow extends JFrame {
 	        }
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
-	      }
+	    }
 		
 		
 		lblNewLabel.setForeground(Color.WHITE);
@@ -164,7 +201,7 @@ public class mainWindow extends JFrame {
 		btnSelect.setBounds(114, 123, 317, 23);
 		panel.add(btnSelect);
 		
-		button.setBounds(467, 35, 88, 261);
+		button.setBounds(569, 11, 88, 295);
 		contentPane.add(button);
 		
 		//////////////////////////////////////////////
@@ -230,7 +267,29 @@ public class mainWindow extends JFrame {
 		});
     }
 	
-	
+	public static DefaultTableModel buildTableModel(ResultSet rs)
+	        throws SQLException {
+
+	    ResultSetMetaData metaData = rs.getMetaData();
+
+	    // names of columns
+	    Vector<String> columnNames = new Vector<String>();
+	    int columnCount = metaData.getColumnCount();
+	    for (int column = 1; column <= columnCount; column++) {
+	        columnNames.add(metaData.getColumnName(column));
+	    }
+
+	    // data of the table
+	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+	    while (rs.next()) {
+	        Vector<Object> vector = new Vector<Object>();
+	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+	            vector.add(rs.getObject(columnIndex));
+	        }
+	        data.add(vector);
+	    }
+	    return new DefaultTableModel(data, columnNames);
+	}
 	
 	public void finish(){
 		this.dispose();
