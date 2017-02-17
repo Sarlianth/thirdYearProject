@@ -116,31 +116,42 @@ public class mainWindow extends JFrame {
 		panel.setBackground(Color.DARK_GRAY);
 		panel_1.setBackground(Color.DARK_GRAY);
 		scrollPane.setEnabled(false);
-		scrollPane.setBounds(10, 85, 524, 171);
+		scrollPane.setBounds(10, 45, 524, 211);
 		
 		panel_1.add(scrollPane);
+		refreshBuses();
 		
-		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
-			Statement stmt = conn.createStatement();
-			
-			String strSelect = "select * from bus_table";
-	 
-	        ResultSet rset = stmt.executeQuery(strSelect);
-	 
-	        table = new JTable(buildTableModel(rset));
-	        scrollPane.setViewportView(table);
-	        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	        table.setEnabled(false);
-	        table.setForeground(Color.WHITE);
-			table.setBorder(null);
-			table.setBackground(Color.GRAY);
-			table.setBounds(10, 11, 192, 63);
-	       
-	        
-	      } catch(SQLException ex) {
-	    	  ex.printStackTrace();
-	      }
+		JButton btnAddBus = new JButton("Add");
+		btnAddBus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addBus frame = new addBus(if_admin);
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+				finish();
+				
+			}
+		});
+		btnAddBus.setBounds(10, 11, 89, 23);
+		panel_1.add(btnAddBus);
+		
+		JButton btnDeleteBus = new JButton("Delete");
+		btnDeleteBus.setBounds(109, 11, 89, 23);
+		panel_1.add(btnDeleteBus);
+		
+		JButton btnUpdateBus = new JButton("Update ");
+		btnUpdateBus.setBounds(208, 11, 89, 23);
+		panel_1.add(btnUpdateBus);
+		
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				refreshBuses();
+				
+			}
+		});
+		btnRefresh.setBounds(445, 11, 89, 23);
+		panel_1.add(btnRefresh);
 	
 		panel_2.setBackground(Color.DARK_GRAY);
 		panel_3.setBackground(Color.DARK_GRAY);
@@ -289,6 +300,32 @@ public class mainWindow extends JFrame {
 	        data.add(vector);
 	    }
 	    return new DefaultTableModel(data, columnNames);
+	}
+	
+	//////////////////////////////////////////////
+	///////METHOD TO REFRESH THE BUSES TABLE//////
+	/////////////////////////////////////////////
+	public void refreshBuses(){
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Statement stmt = conn.createStatement();
+			
+			String strSelect = "select * from bus_table";
+	 
+	        ResultSet rset = stmt.executeQuery(strSelect);
+	 
+        	table = new JTable(buildTableModel(rset));
+	        scrollPane.setViewportView(table);
+	        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        table.setEnabled(false);
+	        table.setForeground(Color.WHITE);
+			table.setBorder(null);
+			table.setBackground(Color.GRAY);
+			table.setBounds(10, 11, 192, 63);
+
+	      } catch(SQLException ex) {
+	    	  ex.printStackTrace();
+	      }
 	}
 	
 	public void finish(){

@@ -6,7 +6,7 @@ Show tables;
 Drop table if exists bus_table;
 
 create table bus_table (
-	bus_id INT NOT NULL,
+	bus_id INT NOT NULL AUTO_INCREMENT,
 	bus_number varchar(30) NOT NULL,
 	depart_from varchar(60) NOT NULL,
 	going_to varchar(60) NOT NULL,
@@ -23,7 +23,7 @@ create table ticket (
 	adult_quantity INT NOT NULL,
 	student_quantity INT NOT NULL,
 	user_id INT NOT NULL,
-	ticket_id INT NOT NULL,
+	ticket_id INT NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY (ticket_id)
 );
 
@@ -42,6 +42,8 @@ create table users (
 ALTER TABLE ticket ADD CONSTRAINT ticket_fk0 FOREIGN KEY (bus_id) REFERENCES bus_table(bus_id);
 
 ALTER TABLE ticket ADD CONSTRAINT ticket_fk1 FOREIGN KEY (user_id) REFERENCES users(id);
+
+ALTER TABLE ticket AUTO_INCREMENT=543200;
 
 INSERT INTO users VALUES 
 (1, "Adrian", "Sypos", "admin", "admin", true), 
