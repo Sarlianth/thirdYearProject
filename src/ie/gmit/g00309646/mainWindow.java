@@ -128,13 +128,20 @@ public class mainWindow extends JFrame {
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 				finish();
-				
 			}
 		});
 		btnAddBus.setBounds(10, 11, 89, 23);
 		panel_1.add(btnAddBus);
 		
 		JButton btnDeleteBus = new JButton("Delete");
+		btnDeleteBus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deleteBus frame = new deleteBus(if_admin);
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+				finish();
+			}
+		});
 		btnDeleteBus.setBounds(109, 11, 89, 23);
 		panel_1.add(btnDeleteBus);
 		
@@ -329,6 +336,7 @@ public class mainWindow extends JFrame {
 	}
 	
 	public void finish(){
+		this.setVisible(false);
 		this.dispose();
 	}
 }
