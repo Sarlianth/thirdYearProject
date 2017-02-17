@@ -6,6 +6,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -25,7 +29,6 @@ public class addBus extends JFrame {
 	private JTextField busIDField;
 	private JTextField sourceField;
 	private JTextField destinationField;
-	private static JLabel errorLabel = new JLabel("");
 	private static JComboBox comboBox = new JComboBox();
 	private static JComboBox comboBox_1 = new JComboBox();
 	private static JComboBox comboBox_2 = new JComboBox();
@@ -68,7 +71,7 @@ public class addBus extends JFrame {
 		setTitle("Add new bus");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 300, 220);
+		setBounds(100, 100, 300, 197);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -82,35 +85,62 @@ public class addBus extends JFrame {
 				mainWindow frame = new mainWindow(if_admin);
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
+				frame.refreshBuses();
 				finish();
 
 			}
 		});
-		btnBack.setBounds(188, 157, 80, 23);
+		btnBack.setBounds(188, 134, 80, 23);
 		contentPane.add(btnBack);
 		
 		JLabel lblBusIdname = new JLabel("Bus ID/Name");
 		lblBusIdname.setForeground(Color.WHITE);
-		lblBusIdname.setBounds(10, 36, 86, 17);
+		lblBusIdname.setBounds(10, 13, 86, 17);
 		contentPane.add(lblBusIdname);
 		
 		JLabel lblSourceStation = new JLabel("Source station");
 		lblSourceStation.setForeground(Color.WHITE);
-		lblSourceStation.setBounds(10, 67, 86, 17);
+		lblSourceStation.setBounds(10, 44, 86, 17);
 		contentPane.add(lblSourceStation);
 		
 		JLabel lblDestination = new JLabel("Destination");
 		lblDestination.setForeground(Color.WHITE);
-		lblDestination.setBounds(10, 98, 86, 17);
+		lblDestination.setBounds(10, 75, 86, 17);
 		contentPane.add(lblDestination);
 		
 		JLabel lblTime = new JLabel("Time (HH:MM)");
 		lblTime.setForeground(Color.WHITE);
-		lblTime.setBounds(10, 129, 86, 17);
+		lblTime.setBounds(10, 106, 86, 17);
 		contentPane.add(lblTime);
 		
 		JButton btnAdd = new JButton("Add");
-		btnAdd.setBounds(10, 157, 80, 23);
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String bus_number = busIDField.getText();
+				String depart_from = sourceField.getText();
+				String going_to = destinationField.getText();
+				String bus_time = comboBox.getSelectedItem() + ":" + comboBox_1.getSelectedItem() + comboBox_2.getSelectedItem().toString();
+				
+				try {
+					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+					Statement stmt = conn.createStatement();
+					
+					String strSelect = "insert into bus_table (bus_number,depart_from,going_to,bus_time) values ('"+bus_number+"', '"+depart_from+"', '"+going_to+"', '"+bus_time+"')";
+			 
+			        stmt.executeUpdate(strSelect);
+			        
+			        mainWindow frame = new mainWindow(if_admin);
+			        frame.setLocationRelativeTo(null);
+			        frame.setVisible(true);
+			        finish();
+
+			      } catch(SQLException ex) {
+			    	  ex.printStackTrace();
+			      } // end of try/catch
+			} //actionPerformed
+		});
+		btnAdd.setBounds(10, 134, 80, 23);
 		contentPane.add(btnAdd);
 		
 		JButton btnClear = new JButton("Clear");
@@ -120,47 +150,42 @@ public class addBus extends JFrame {
 				comboBox.setSelectedItem(12);
 				comboBox_1.setSelectedItem(30);
 				comboBox_2.setSelectedItem("AM");
-				errorLabel.setText("");
 				sourceField.setText("");
 				destinationField.setText("");
 				busIDField.setText("");
 				
 			}
 		});
-		btnClear.setBounds(98, 158, 80, 23);
+		btnClear.setBounds(98, 135, 80, 23);
 		contentPane.add(btnClear);
-		
-		errorLabel.setForeground(Color.RED);
-		errorLabel.setBounds(10, 11, 258, 14);
-		contentPane.add(errorLabel);
 		
 		sourceField = new JTextField();
 		sourceField.setColumns(10);
-		sourceField.setBounds(106, 65, 162, 20);
+		sourceField.setBounds(106, 42, 162, 20);
 		contentPane.add(sourceField);
 		
 		destinationField = new JTextField();
 		destinationField.setColumns(10);
-		destinationField.setBounds(106, 96, 162, 20);
+		destinationField.setBounds(106, 73, 162, 20);
 		contentPane.add(destinationField);
 		
 		busIDField = new JTextField("");
-		busIDField.setBounds(106, 34, 162, 20);
+		busIDField.setBounds(106, 11, 162, 20);
 		contentPane.add(busIDField);
 		busIDField.setColumns(10);
 		
 		comboBox.setModel(new DefaultComboBoxModel(hours.toArray()));
-		comboBox.setBounds(106, 127, 46, 20);
+		comboBox.setBounds(106, 104, 46, 20);
 		contentPane.add(comboBox);
 		comboBox.setSelectedItem(12);
 		
 		comboBox_1.setModel(new DefaultComboBoxModel(mins.toArray()));
-		comboBox_1.setBounds(162, 126, 46, 20);
+		comboBox_1.setBounds(162, 103, 46, 20);
 		contentPane.add(comboBox_1);
 		comboBox_1.setSelectedItem(30);
 		
 		comboBox_2 = new JComboBox(choice);
-		comboBox_2.setBounds(218, 127, 50, 20);
+		comboBox_2.setBounds(218, 104, 50, 20);
 		contentPane.add(comboBox_2);
 		comboBox_2.setSelectedItem("AM");
 	}

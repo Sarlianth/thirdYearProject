@@ -133,6 +133,7 @@ public class deleteBus extends JFrame {
 				        mainWindow frame = new mainWindow(if_admin);
 				        frame.setLocationRelativeTo(null);
 				        frame.setVisible(true);
+				        frame.refreshBuses();
 				        finish();
 
 				      } catch(SQLException ex) {

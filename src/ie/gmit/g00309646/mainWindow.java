@@ -3,6 +3,7 @@ package ie.gmit.g00309646;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.DefaultComboBoxModel;
@@ -68,7 +69,7 @@ public class mainWindow extends JFrame {
 					mainWindow frame = new mainWindow(false);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
-				} catch (Exception e) {
+					} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -136,10 +137,24 @@ public class mainWindow extends JFrame {
 		JButton btnDeleteBus = new JButton("Delete");
 		btnDeleteBus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				deleteBus frame = new deleteBus(if_admin);
-				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
-				finish();
+				int dialogButton = JOptionPane.YES_NO_OPTION;
+				int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the bus? \n ","Warning", dialogButton);
+				if(dialogResult == JOptionPane.YES_OPTION){
+
+					try {
+						Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+						Statement stmt = conn.createStatement();
+						
+						String strSelect = "delete from bus_table where bus_id like " + table.getValueAt(table.getSelectedRow(), 0);
+				 
+				        stmt.executeUpdate(strSelect);
+				        
+				        refreshBuses();
+
+				      } catch(SQLException ex) {
+				    	  ex.printStackTrace();
+				      } // end of try/catch
+				}
 			}
 		});
 		btnDeleteBus.setBounds(109, 11, 89, 23);
@@ -324,7 +339,7 @@ public class mainWindow extends JFrame {
         	table = new JTable(buildTableModel(rset));
 	        scrollPane.setViewportView(table);
 	        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	        table.setEnabled(false);
+	       // table.setEnabled(false);
 	        table.setForeground(Color.WHITE);
 			table.setBorder(null);
 			table.setBackground(Color.GRAY);
