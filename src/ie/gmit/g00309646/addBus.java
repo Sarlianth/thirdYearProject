@@ -85,6 +85,7 @@ public class addBus extends JFrame {
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 				frame.refreshBuses();
+				frame.populate();
 				finish();
 			}
 		});

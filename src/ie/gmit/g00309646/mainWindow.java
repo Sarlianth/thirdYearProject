@@ -69,6 +69,7 @@ public class mainWindow extends JFrame {
 					mainWindow frame = new mainWindow(false);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
+					
 					} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -81,6 +82,7 @@ public class mainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public mainWindow(boolean if_admin) {
+		
 		setResizable(false);
 		setBackground(Color.DARK_GRAY);
 		setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -103,6 +105,9 @@ public class mainWindow extends JFrame {
 		tabbedPane.setBackground(Color.DARK_GRAY);
 		tabbedPane.setBounds(10, 11, 549, 295);
 		contentPane.add(tabbedPane);
+		
+		//get the bus stations from database and populate them into array lists
+		populate();
 		
 		tabbedPane.addTab("Reservation", panel);
 		tabbedPane.addTab("Bus management", panel_1);
@@ -198,14 +203,11 @@ public class mainWindow extends JFrame {
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				refreshBuses();
-				
 			}
 		});
 		btnRefresh.setBounds(445, 11, 89, 23);
 		panel_1.add(btnRefresh);
-	
 		panel_2.setBackground(Color.DARK_GRAY);
 		panel_3.setBackground(Color.DARK_GRAY);
 		
@@ -213,28 +215,6 @@ public class mainWindow extends JFrame {
 		if(!if_admin){
 			tabbedPane.setEnabledAt(2, false);
 		}
-		
-		//get the bus stations from database and populate them into array lists
-		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
-			Statement stmt = conn.createStatement();
-			
-			String strSelect = "select depart_from, going_to from bus_table";
-	 
-	        ResultSet rset = stmt.executeQuery(strSelect);
-	 
-	        while(rset.next()) {
-	        	if(!sourceStations.contains(rset.getString("depart_from"))){
-	        		sourceStations.add(rset.getString("depart_from"));
-	        	}
-	        	if(!destinationStations.contains(rset.getString("going_to"))){
-	        		destinationStations.add(rset.getString("going_to"));
-	        	}
-	        }
-	      } catch(SQLException ex) {
-	    	  ex.printStackTrace();
-	    }
-		
 		
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setBounds(10, 26, 91, 19);
@@ -265,6 +245,15 @@ public class mainWindow extends JFrame {
 		btnSelect.setBounds(114, 123, 317, 23);
 		panel.add(btnSelect);
 		
+		JButton btnRefresh_1 = new JButton("Refresh");
+		btnRefresh_1.setBounds(445, 24, 89, 23);
+		panel.add(btnRefresh_1);
+		btnRefresh_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				populate();
+			}
+		});
+		
 		button.setBounds(569, 11, 88, 295);
 		contentPane.add(button);
 		
@@ -281,7 +270,7 @@ public class mainWindow extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-	
+		
 		//////////////////////////////////////////////
 		///////SUBMIT BUTTON ACTION LISTENER/////////
 		/////////////////////////////////////////////
@@ -372,7 +361,6 @@ public class mainWindow extends JFrame {
         	table = new JTable(buildTableModel(rset));
 	        scrollPane.setViewportView(table);
 	        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	       // table.setEnabled(false);
 	        table.setForeground(Color.WHITE);
 			table.setBorder(null);
 			table.setBackground(Color.GRAY);
@@ -386,5 +374,33 @@ public class mainWindow extends JFrame {
 	public void finish(){
 		this.setVisible(false);
 		this.dispose();
+	}
+	
+	public void populate(){
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Statement stmt = conn.createStatement();
+			
+			String strSelect = "select depart_from, going_to from bus_table";
+	 
+	        ResultSet rset = stmt.executeQuery(strSelect);
+	 
+	        sourceStations.clear();
+	        destinationStations.clear();
+	        
+	        while(rset.next()) {
+	        	if(!sourceStations.contains(rset.getString("depart_from"))){
+	        		sourceStations.add(rset.getString("depart_from"));
+	        	}
+	        	if(!destinationStations.contains(rset.getString("going_to"))){
+	        		destinationStations.add(rset.getString("going_to"));
+	        	}
+	        }
+	        
+	        comboBox.setModel(new DefaultComboBoxModel(sourceStations.toArray()));
+			comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
+	      } catch(SQLException ex) {
+	    	  ex.printStackTrace();
+	      }
 	}
 }
