@@ -22,6 +22,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
 import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.JComboBox;
 import java.awt.Font;
 import javax.swing.JTable;
@@ -53,9 +55,9 @@ public class mainWindow extends JFrame {
 	private static JPanel panel_1 = new JPanel();
 	private static JPanel panel_3 = new JPanel();
 	private static JPanel panel = new JPanel();
-	private JButton btnSearch = new JButton("Search");
+	private JButton btnSearch = new JButton("Look for buses");
 	private JButton button = new JButton("Logout");
-	private JButton btnSelect = new JButton("Select");
+	private JButton btnSelect = new JButton("Choose bus");
 	private JLabel lblNewLabel = new JLabel("Source station:");
 	private	JLabel lblDestination = new JLabel("Destination:");
 	private final static JScrollPane scrollPane = new JScrollPane();
@@ -63,6 +65,8 @@ public class mainWindow extends JFrame {
 	private final JLabel lblSelectDate = new JLabel("Select date:");
 	private final JLabel lblPassanger = new JLabel("Passangers:");
 	private final JButton btnClear = new JButton("Clear");
+	private static JDatePickerImpl datePicker;
+	private static JPanel panel_4 = new JPanel();
 		
 	/**
 	 * Launch the application.
@@ -72,7 +76,7 @@ public class mainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					mainWindow frame = new mainWindow(false);
+					mainWindow frame = new mainWindow(false, 0);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -87,7 +91,7 @@ public class mainWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public mainWindow(boolean if_admin) {
+	public mainWindow(boolean if_admin, int userID) {
 		
 		setResizable(false);
 		setBackground(Color.DARK_GRAY);
@@ -246,9 +250,17 @@ public class mainWindow extends JFrame {
 		
 		comboBox_2.setBounds(114, 95, 317, 20);
 		panel.add(comboBox_2);
+		btnSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				enablePanel();
+				
+			}
+		});
 
 		btnSelect.setBounds(114, 123, 317, 23);
 		panel.add(btnSelect);
+		btnSelect.setEnabled(false);
 		
 		JButton btnRefresh_1 = new JButton("Refresh");
 		btnRefresh_1.setBounds(445, 24, 89, 23);
@@ -284,6 +296,8 @@ public class mainWindow extends JFrame {
 				
 				availableBuses.clear();
 				comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
+				btnSelect.setEnabled(false);
+				disablePanel();
 				
 				if(!comboBox.getSelectedItem().equals(comboBox_1.getSelectedItem())){
 					System.out.println(comboBox.getSelectedItem() + "  " + comboBox_1.getSelectedItem());
@@ -308,6 +322,7 @@ public class mainWindow extends JFrame {
 				        	String availableBus = tempID + " : " + tempBusNo + " : " + tempDepartFrom + " - " + tempGoingTo + " @ " + tempBusTime;
 				        	
 				        	availableBuses.add(availableBus);
+				        	btnSelect.setEnabled(true);
 
 				        	comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
 				        }  
@@ -321,7 +336,9 @@ public class mainWindow extends JFrame {
 				else{
 					System.out.println("Wrong! Try again..");
 					availableBuses.clear();
-					comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));		
+					comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
+					btnSelect.setEnabled(false);
+					disablePanel();
 				}	
 			}
 		});
@@ -329,7 +346,6 @@ public class mainWindow extends JFrame {
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
 		
-		JPanel panel_4 = new JPanel();
 		panel_4.setBackground(Color.DARK_GRAY);
 		panel_4.setForeground(Color.WHITE);
 		panel_4.setBounds(10, 157, 524, 99);
@@ -359,7 +375,7 @@ public class mainWindow extends JFrame {
 		lblSelectDate.setBounds(10, 15, 91, 14);
 		panel_4.add(lblSelectDate);
 		lblSelectDate.setForeground(Color.WHITE);
-		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
+		datePicker = new JDatePickerImpl(datePanel);
 		datePicker.setBounds(114, 11, 118, 23);
 		panel_4.add(datePicker);
 		datePicker.getJFormattedTextField().setBounds(0, 0, 229, 23);
@@ -377,14 +393,48 @@ public class mainWindow extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				System.out.println(comboBox_2.getSelectedItem());
+				String[] selected = comboBox_2.getSelectedItem().toString().split(" : "); // <-- selected[0] contains the bus id that we want to book the ticket for..
 				
-				System.out.println("date: " + model.getDay()+" "+model.getMonth()+" "+model.getYear());
-				System.out.println("bus id: ");
+				int bus_id = 0;
+				String bus_number = null;
+				String depart_from = null;
+				String going_to = null;
+				String bus_time = null;
+				
+				try {
+					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+					Statement stmt = conn.createStatement();
+					
+					String strSelect = "select * from bus_table where bus_id="+selected[0];
+			 
+			        ResultSet rset = stmt.executeQuery(strSelect);
+			 
+		        	while(rset.next()) {
+		        		bus_id = rset.getInt("bus_id");
+		        		bus_number = rset.getString("bus_number");
+		        		depart_from = rset.getString("depart_from");
+		        		going_to = rset.getString("going_to");
+		        		bus_time = rset.getString("bus_time");
+			        }  
+		        	
+		        	/////////////////////////////////
+		        	////checking all information/////
+		        	/////////////////////////////////
+		        	System.out.println("Bus ID - "+bus_id);
+		        	System.out.println("Bus number - "+bus_number);
+		        	System.out.println("Joutney date - "+model.getDay()+"/"+model.getMonth()+"/"+model.getYear());
+		        	System.out.println("Adult quantity - "+comboBox_adult.getSelectedIndex()); 
+		        	System.out.println("Student quantity - "+comboBox_student.getSelectedItem());
+		        	System.out.println("User ID - "+userID);
+		        	
+
+			      } catch(SQLException ex) {
+			    	  ex.printStackTrace();
+			      }
 				
 			}
 		});
-		btnNewButton.setBounds(333, 11, 89, 23);
+		btnNewButton.setBounds(317, 11, 105, 23);
 		panel_4.add(btnNewButton);
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -395,9 +445,11 @@ public class mainWindow extends JFrame {
 				
 			}
 		});
-		btnClear.setBounds(333, 44, 89, 23);
+		btnClear.setBounds(317, 44, 105, 23);
 		
 		panel_4.add(btnClear);
+		
+		disablePanel();
     }
 	
 	public static DefaultTableModel buildTableModel(ResultSet rs)
@@ -480,5 +532,19 @@ public class mainWindow extends JFrame {
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
 	      }
+	}
+	
+	public void disablePanel(){
+		for (Component cp : panel_4.getComponents() ){
+	        cp.setEnabled(false);
+		}
+		datePicker.getJFormattedTextField().setEnabled(false);
+	}
+	
+	public void enablePanel(){
+		for (Component cp : panel_4.getComponents() ){
+	        cp.setEnabled(true);
+		}
+		datePicker.getJFormattedTextField().setEnabled(true);
 	}
 }

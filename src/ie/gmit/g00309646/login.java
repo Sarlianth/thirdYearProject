@@ -80,6 +80,7 @@ public class login extends JFrame {
 				String guiUser, guiPass, dbUser = null, dbPass = null, dbName = null;
 				char[] pass;
 				boolean is_admin;
+				int userID;
 				
 				guiUser = inputUsername.getText();;
 				pass = passwordField.getPassword();
@@ -89,13 +90,14 @@ public class login extends JFrame {
 				
 				try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); Statement stmt = conn.createStatement();){
 
-					 String strSelect = "select name, username, password, is_admin from users";
+					 String strSelect = "select id, name, username, password, is_admin from users";
 			 
 			         ResultSet rset = stmt.executeQuery(strSelect);
 			 
 			         // Step 4: Process the ResultSet by scrolling the cursor forward via next().
 			         // For each row, retrieve the contents of the cells with getXxx(columnName).
 			         while(rset.next()) {   // Move the cursor to the next row, return false if no more row
+			        	userID = rset.getInt("id");
 			        	dbName = rset.getString("name");
 			            dbUser = rset.getString("username");
 			            dbPass = rset.getString("password");
@@ -107,7 +109,7 @@ public class login extends JFrame {
 			            	if(is_admin){
 			            		JOptionPane.showMessageDialog(null, "Hi, " + dbName + "." + "You have admin privileges.");
 			            		hideLogin();
-				            	mainWindow f = new mainWindow(true);
+				            	mainWindow f = new mainWindow(true, userID);
 				            	f.setLocationRelativeTo(null);
 				            	f.setVisible(true);
 				            	break;
@@ -115,7 +117,7 @@ public class login extends JFrame {
 			            	else{
 			            		JOptionPane.showMessageDialog(null, "Hi, " + dbName + ".");
 			            		hideLogin();
-				            	mainWindow f = new mainWindow(false);
+				            	mainWindow f = new mainWindow(false, userID);
 				            	f.setLocationRelativeTo(null);
 				            	f.setVisible(true);
 				            	break;
