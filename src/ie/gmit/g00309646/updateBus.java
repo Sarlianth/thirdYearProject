@@ -87,10 +87,6 @@ public class updateBus extends JFrame {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mainWindow frame = new mainWindow(if_admin);
-				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
-				frame.refreshBuses();
 				finish();
 			}
 		});
@@ -143,9 +139,7 @@ public class updateBus extends JFrame {
 			 
 			        stmt.executeUpdate(strSelect);
 			        
-			        mainWindow frame = new mainWindow(if_admin);
-			        frame.setLocationRelativeTo(null);
-			        frame.setVisible(true);
+			        mainWindow.refreshBuses();
 			        finish();
 
 			      } catch(SQLException ex) {
@@ -202,9 +196,6 @@ public class updateBus extends JFrame {
 	    		String[] time = tempTime.split("\\.");
 	    		//time[0] <-- this is out hour
 	    		String timeChoice = time[0].substring(Math.max(time[0].length() - 2, 0)); // <-- This is AM / PM depending on whatever is in database for given bus
-	    		System.out.println(timeChoice);
-	    		System.out.println("time[0] - " + time[0]);
-	    		System.out.println("time[1] - " + time[1]);
 	
 	    		if(time[1].length() == 4){
 	    			min = time[1].substring(0, 2); 
@@ -212,7 +203,6 @@ public class updateBus extends JFrame {
 	    		else{
 	    			min = time[1].substring(0, 1);
 	    		}
-	    		System.out.println("min - " + min);
 	    		
 	    		comboBox.setSelectedItem(Integer.parseInt(time[0]));
 	    		comboBox_1.setSelectedItem(Integer.parseInt(min));
@@ -227,9 +217,6 @@ public class updateBus extends JFrame {
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
 	      }
-		
-		
-		
 	}
 	
 	public void finish(){

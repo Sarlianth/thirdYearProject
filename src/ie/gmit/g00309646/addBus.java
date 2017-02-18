@@ -1,11 +1,8 @@
 package ie.gmit.g00309646;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,6 +40,7 @@ public class addBus extends JFrame {
 					addBus frame = new addBus(false);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
+					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -53,7 +51,7 @@ public class addBus extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public addBus(boolean if_admin) {		
+	public addBus(boolean if_admin) {	
 		ArrayList<Integer> hours = new ArrayList<Integer>();
 		for (int i = 1; i <= 12; i++){
 		   hours.add(i);
@@ -81,11 +79,7 @@ public class addBus extends JFrame {
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mainWindow frame = new mainWindow(if_admin);
-				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
-				frame.refreshBuses();
-				frame.populate();
+				mainWindow.refreshBuses();
 				finish();
 			}
 		});
@@ -137,9 +131,7 @@ public class addBus extends JFrame {
 			 
 			        stmt.executeUpdate(strSelect);
 			        
-			        mainWindow frame = new mainWindow(if_admin);
-			        frame.setLocationRelativeTo(null);
-			        frame.setVisible(true);
+			        mainWindow.refreshBuses();
 			        finish();
 
 			      } catch(SQLException ex) {

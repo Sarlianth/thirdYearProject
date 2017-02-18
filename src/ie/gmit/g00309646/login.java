@@ -47,10 +47,12 @@ public class login extends JFrame {
 				      } catch(SQLException ex) {
 				         ex.printStackTrace();
 				         btnNewButton.setEnabled(false);
+				         JOptionPane.showMessageDialog(null, ex);
 				      }
 					
 				} catch (Exception e) {
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, e);
 				}
 			}
 		});

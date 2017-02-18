@@ -25,9 +25,12 @@ import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.Font;
 import javax.swing.JTable;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
+
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 
@@ -50,13 +53,16 @@ public class mainWindow extends JFrame {
 	private static JPanel panel_1 = new JPanel();
 	private static JPanel panel_3 = new JPanel();
 	private static JPanel panel = new JPanel();
-	private JButton btnSubmit = new JButton("Search");
+	private JButton btnSearch = new JButton("Search");
 	private JButton button = new JButton("Logout");
 	private JButton btnSelect = new JButton("Select");
 	private JLabel lblNewLabel = new JLabel("Source station:");
 	private	JLabel lblDestination = new JLabel("Destination:");
-	private final JScrollPane scrollPane = new JScrollPane();
-	private JTable table;
+	private final static JScrollPane scrollPane = new JScrollPane();
+	private static JTable table;
+	private final JLabel lblSelectDate = new JLabel("Select date:");
+	private final JLabel lblPassanger = new JLabel("Passangers:");
+	private final JButton btnClear = new JButton("Clear");
 		
 	/**
 	 * Launch the application.
@@ -132,7 +138,7 @@ public class mainWindow extends JFrame {
 				addBus frame = new addBus(if_admin);
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
-				finish();
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		});
 		btnAddBus.setBounds(10, 11, 89, 23);
@@ -172,7 +178,7 @@ public class mainWindow extends JFrame {
 		btnDeleteBus.setBounds(109, 11, 89, 23);
 		panel_1.add(btnDeleteBus);
 		
-		JButton btnUpdateBus = new JButton("Update ");
+		JButton btnUpdateBus = new JButton("Update");
 		btnUpdateBus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -187,11 +193,10 @@ public class mainWindow extends JFrame {
 					if(dialogResult == JOptionPane.YES_OPTION){
 
 						int key = (int) table.getValueAt(table.getSelectedRow(), 0);
-						System.out.println(key);
 						updateBus frame = new updateBus(if_admin, key);
 						frame.setVisible(true);
 						frame.setLocationRelativeTo(null);
-						finish();
+						frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 						
 					}// if confirmed
 				} // if row has been selected
@@ -224,7 +229,7 @@ public class mainWindow extends JFrame {
 		lblDestination.setBounds(239, 28, 79, 14);
 		panel.add(lblDestination);
 		
-		comboBox.setBounds(111, 25, 118, 20);
+		comboBox.setBounds(114, 25, 118, 20);
 		panel.add(comboBox);
 		comboBox.setModel(new DefaultComboBoxModel(sourceStations.toArray()));
 		
@@ -232,8 +237,8 @@ public class mainWindow extends JFrame {
 		panel.add(comboBox_1);
 		comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
 		
-		btnSubmit.setBounds(114, 61, 317, 23);
-		panel.add(btnSubmit);
+		btnSearch.setBounds(114, 61, 317, 23);
+		panel.add(btnSearch);
 		lblAvailableBus.setForeground(Color.WHITE);
 		
 		lblAvailableBus.setBounds(10, 96, 91, 19);
@@ -272,15 +277,17 @@ public class mainWindow extends JFrame {
 		});
 		
 		//////////////////////////////////////////////
-		///////SUBMIT BUTTON ACTION LISTENER/////////
+		///////SEARCH BUTTON ACTION LISTENER/////////
 		/////////////////////////////////////////////
-		btnSubmit.addActionListener(new ActionListener() {
+		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				availableBuses.clear();
+				comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
 				
 				if(!comboBox.getSelectedItem().equals(comboBox_1.getSelectedItem())){
 					System.out.println(comboBox.getSelectedItem() + "  " + comboBox_1.getSelectedItem());
+					
 					
 					try {
 						Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
@@ -298,7 +305,8 @@ public class mainWindow extends JFrame {
 				        	String tempGoingTo = rset.getString("going_to");
 				        	String tempBusTime = rset.getString("bus_time");
 				        	
-				        	String availableBus = tempBusNo + ": " + tempDepartFrom + " to " + tempGoingTo + " @ " + tempBusTime;
+				        	String availableBus = tempID + " : " + tempBusNo + " : " + tempDepartFrom + " - " + tempGoingTo + " @ " + tempBusTime;
+				        	
 				        	availableBuses.add(availableBus);
 
 				        	comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
@@ -311,15 +319,85 @@ public class mainWindow extends JFrame {
 					
 				}
 				else{
-					
 					System.out.println("Wrong! Try again..");
 					availableBuses.clear();
-					comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
-					
-				}
+					comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));		
+				}	
+			}
+		});
+		
+		UtilDateModel model = new UtilDateModel();
+		JDatePanelImpl datePanel = new JDatePanelImpl(model);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBackground(Color.DARK_GRAY);
+		panel_4.setForeground(Color.WHITE);
+		panel_4.setBounds(10, 157, 524, 99);
+		panel.add(panel_4);
+		panel_4.setLayout(null);
+		
+		JComboBox comboBox_student = new JComboBox();
+		comboBox_student.setBounds(234, 45, 45, 20);
+		panel_4.add(comboBox_student);
+		
+		JLabel lblStudent = new JLabel("Student:");
+		lblStudent.setBounds(182, 47, 54, 14);
+		panel_4.add(lblStudent);
+		lblStudent.setForeground(Color.WHITE);
+		
+		JComboBox comboBox_adult = new JComboBox();
+		comboBox_adult.setBounds(127, 45, 45, 20);
+		panel_4.add(comboBox_adult);
+		
+		JLabel lblAdult = new JLabel("Adult:");
+		lblAdult.setBounds(87, 47, 45, 14);
+		panel_4.add(lblAdult);
+		lblAdult.setForeground(Color.WHITE);
+		lblPassanger.setBounds(10, 48, 91, 14);
+		panel_4.add(lblPassanger);
+		lblPassanger.setForeground(Color.WHITE);
+		lblSelectDate.setBounds(10, 15, 91, 14);
+		panel_4.add(lblSelectDate);
+		lblSelectDate.setForeground(Color.WHITE);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
+		datePicker.setBounds(114, 11, 118, 23);
+		panel_4.add(datePicker);
+		datePicker.getJFormattedTextField().setBounds(0, 0, 229, 23);
+		
+		for(int i=0;i<=15;i++){
+			comboBox_adult.addItem(new Integer(i));
+			comboBox_student.addItem(new Integer(i));
+		}
+		
+		comboBox_student.setSelectedItem(1);
+		model.setDate(2017, 3, 24);
+		model.setSelected(true);
+		
+		JButton btnNewButton = new JButton("Buy tickets");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				System.out.println(comboBox_2.getSelectedItem());
+				
+				System.out.println("date: " + model.getDay()+" "+model.getMonth()+" "+model.getYear());
+				System.out.println("bus id: ");
 				
 			}
 		});
+		btnNewButton.setBounds(333, 11, 89, 23);
+		panel_4.add(btnNewButton);
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				comboBox_adult.setSelectedItem(0);
+				comboBox_student.setSelectedItem(1);
+				model.setDate(2017, 3, 24);
+				
+			}
+		});
+		btnClear.setBounds(333, 44, 89, 23);
+		
+		panel_4.add(btnClear);
     }
 	
 	public static DefaultTableModel buildTableModel(ResultSet rs)
@@ -349,7 +427,7 @@ public class mainWindow extends JFrame {
 	//////////////////////////////////////////////
 	///////METHOD TO REFRESH THE BUSES TABLE//////
 	/////////////////////////////////////////////
-	public void refreshBuses(){
+	public static void refreshBuses(){
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
 			Statement stmt = conn.createStatement();
