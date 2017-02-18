@@ -120,7 +120,6 @@ public class mainWindow extends JFrame {
 		scrollPane.setBounds(10, 45, 524, 211);
 		
 		panel_1.add(scrollPane);
-		refreshBuses();
 		
 		JButton btnAddBus = new JButton("Add");
 		btnAddBus.addActionListener(new ActionListener() {
@@ -137,30 +136,62 @@ public class mainWindow extends JFrame {
 		JButton btnDeleteBus = new JButton("Delete");
 		btnDeleteBus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int dialogButton = JOptionPane.YES_NO_OPTION;
-				int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the bus? \n ","Warning", dialogButton);
-				if(dialogResult == JOptionPane.YES_OPTION){
+				
+				int row = table.getSelectedRow();
 
-					try {
-						Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
-						Statement stmt = conn.createStatement();
-						
-						String strSelect = "delete from bus_table where bus_id like " + table.getValueAt(table.getSelectedRow(), 0);
-				 
-				        stmt.executeUpdate(strSelect);
-				        
-				        refreshBuses();
+				if(row == -1){
+					JOptionPane.showMessageDialog(null, "Select row from the table below first!");
+				}// if row not selected
+				else{
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the bus? \n ","Warning", dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION){
 
-				      } catch(SQLException ex) {
-				    	  ex.printStackTrace();
-				      } // end of try/catch
-				}
-			}
+						try {
+							Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+							Statement stmt = conn.createStatement();
+							
+							String strSelect = "delete from bus_table where bus_id like " + table.getValueAt(table.getSelectedRow(), 0);
+					 
+					        stmt.executeUpdate(strSelect);
+					        
+					        refreshBuses();
+
+					      } catch(SQLException ex) {
+					    	  ex.printStackTrace();
+					      } // end of try/catch
+					}// if user confirmed popup box
+				}// else (if row has been selected)
+			}//action event
 		});
 		btnDeleteBus.setBounds(109, 11, 89, 23);
 		panel_1.add(btnDeleteBus);
 		
 		JButton btnUpdateBus = new JButton("Update ");
+		btnUpdateBus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				int row = table.getSelectedRow();
+
+				if(row == -1){
+					JOptionPane.showMessageDialog(null, "Select row from the table below first!");
+				}// if row not selected
+				else{
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to update this bus? \n ","Warning", dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION){
+
+						int key = (int) table.getValueAt(table.getSelectedRow(), 0);
+						System.out.println(key);
+						updateBus frame = new updateBus(if_admin, key);
+						frame.setVisible(true);
+						frame.setLocationRelativeTo(null);
+						finish();
+						
+					}// if confirmed
+				} // if row has been selected
+			}// action event
+		});
 		btnUpdateBus.setBounds(208, 11, 89, 23);
 		panel_1.add(btnUpdateBus);
 		
@@ -236,6 +267,8 @@ public class mainWindow extends JFrame {
 		
 		button.setBounds(569, 11, 88, 295);
 		contentPane.add(button);
+		
+		refreshBuses();
 		
 		//////////////////////////////////////////////
 		///////LOGOUT BUTTON ACTION LISTENER/////////

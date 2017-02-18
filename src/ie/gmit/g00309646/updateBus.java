@@ -8,6 +8,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -22,8 +23,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Window.Type;
 
-public class addBus extends JFrame {
+public class updateBus extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField busIDField;
@@ -32,6 +34,10 @@ public class addBus extends JFrame {
 	private static JComboBox comboBox = new JComboBox();
 	private static JComboBox comboBox_1 = new JComboBox();
 	private static JComboBox comboBox_2 = new JComboBox();
+	private String tempName;
+	private String tempFrom;
+	private String tempTo;
+	private String tempTime;
 
 	/**
 	 * Launch the application.
@@ -40,7 +46,7 @@ public class addBus extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					addBus frame = new addBus(false);
+					updateBus frame = new updateBus(false, 1);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -53,14 +59,14 @@ public class addBus extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public addBus(boolean if_admin) {		
+	public updateBus(boolean if_admin, int key) {
 		ArrayList<Integer> hours = new ArrayList<Integer>();
 		for (int i = 1; i <= 12; i++){
 		   hours.add(i);
 		}
 		
 		ArrayList<Integer> mins = new ArrayList<Integer>();
-		for (int i = 1; i <= 59; i++){
+		for (int i = 0; i <= 59; i++){
 		   mins.add(i);
 		}
 		
@@ -68,7 +74,7 @@ public class addBus extends JFrame {
 		setResizable(false);
 		setBackground(Color.DARK_GRAY);
 		setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		setTitle("Add new bus");
+		setTitle("Update bus");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 300, 197);
@@ -88,7 +94,8 @@ public class addBus extends JFrame {
 				finish();
 			}
 		});
-		btnBack.setBounds(188, 134, 80, 23);
+		
+		btnBack.setBounds(172, 134, 80, 23);
 		contentPane.add(btnBack);
 		
 		JLabel lblBusIdname = new JLabel("Bus ID/Name");
@@ -111,8 +118,8 @@ public class addBus extends JFrame {
 		lblTime.setBounds(10, 106, 86, 17);
 		contentPane.add(lblTime);
 		
-		JButton btnAdd = new JButton("Add");
-		btnAdd.addActionListener(new ActionListener() {
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				String bus_number = busIDField.getText();
@@ -132,7 +139,7 @@ public class addBus extends JFrame {
 					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
 					Statement stmt = conn.createStatement();
 					
-					String strSelect = "insert into bus_table (bus_number,depart_from,going_to,bus_time) values ('"+bus_number+"', '"+depart_from+"', '"+going_to+"', '"+bus_time+"')";
+					String strSelect = "update bus_table set bus_number='"+bus_number+"', depart_from='"+depart_from+"', going_to='"+going_to+"', bus_time='"+bus_time+"' where bus_id="+key;
 			 
 			        stmt.executeUpdate(strSelect);
 			        
@@ -146,24 +153,8 @@ public class addBus extends JFrame {
 			      } // end of try/catch
 			} //actionPerformed
 		});
-		btnAdd.setBounds(10, 134, 80, 23);
-		contentPane.add(btnAdd);
-		
-		JButton btnClear = new JButton("Clear");
-		btnClear.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				comboBox.setSelectedItem(12);
-				comboBox_1.setSelectedItem(30);
-				comboBox_2.setSelectedItem("AM");
-				sourceField.setText("");
-				destinationField.setText("");
-				busIDField.setText("");
-				
-			}
-		});
-		btnClear.setBounds(98, 135, 80, 23);
-		contentPane.add(btnClear);
+		btnUpdate.setBounds(48, 134, 80, 23);
+		contentPane.add(btnUpdate);
 		
 		sourceField = new JTextField();
 		sourceField.setColumns(10);
@@ -183,17 +174,62 @@ public class addBus extends JFrame {
 		comboBox.setModel(new DefaultComboBoxModel(hours.toArray()));
 		comboBox.setBounds(106, 104, 46, 20);
 		contentPane.add(comboBox);
-		comboBox.setSelectedItem(12);
 		
 		comboBox_1.setModel(new DefaultComboBoxModel(mins.toArray()));
 		comboBox_1.setBounds(162, 103, 46, 20);
 		contentPane.add(comboBox_1);
-		comboBox_1.setSelectedItem(30);
 		
 		comboBox_2 = new JComboBox(choice);
 		comboBox_2.setBounds(218, 104, 50, 20);
 		contentPane.add(comboBox_2);
-		comboBox_2.setSelectedItem("AM");
+		
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Statement stmt = conn.createStatement();
+			
+			String strSelect = "select * from bus_table where bus_id="+key;
+	        ResultSet rset = stmt.executeQuery(strSelect);
+	 
+        	while(rset.next()) {
+	        	
+	        	int tempID = rset.getInt("bus_id");
+	        	busIDField.setText(rset.getString("bus_number"));
+	    		sourceField.setText(rset.getString("depart_from"));
+	    		destinationField.setText(rset.getString("going_to"));
+	    		tempTime = rset.getString("bus_time");
+	    			
+	    		String min;
+	    		String[] time = tempTime.split("\\.");
+	    		//time[0] <-- this is out hour
+	    		String timeChoice = time[0].substring(Math.max(time[0].length() - 2, 0)); // <-- This is AM / PM depending on whatever is in database for given bus
+	    		System.out.println(timeChoice);
+	    		System.out.println("time[0] - " + time[0]);
+	    		System.out.println("time[1] - " + time[1]);
+	
+	    		if(time[1].length() == 4){
+	    			min = time[1].substring(0, 2); 
+	    		}
+	    		else{
+	    			min = time[1].substring(0, 1);
+	    		}
+	    		System.out.println("min - " + min);
+	    		
+	    		comboBox.setSelectedItem(Integer.parseInt(time[0]));
+	    		comboBox_1.setSelectedItem(Integer.parseInt(min));
+	    		if(timeChoice.equalsIgnoreCase("am")){
+	    			comboBox_2.setSelectedItem("AM");
+	    		}
+	    		else{
+	    			comboBox_2.setSelectedItem("PM");
+	    		}
+	        }  
+        	
+	      } catch(SQLException ex) {
+	    	  ex.printStackTrace();
+	      }
+		
+		
+		
 	}
 	
 	public void finish(){
