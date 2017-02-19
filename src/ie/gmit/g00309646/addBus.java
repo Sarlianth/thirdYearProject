@@ -90,6 +90,7 @@ public class addBus extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				mainWindow.refreshBuses();
+				mainWindow.refreshTimetable();
 				finish();
 			}
 		});
@@ -142,6 +143,7 @@ public class addBus extends JFrame {
 			        stmt.executeUpdate(strSelect);
 			        
 			        mainWindow.refreshBuses();
+			        mainWindow.refreshTimetable();
 			        finish();
 
 			      } catch(SQLException ex) {

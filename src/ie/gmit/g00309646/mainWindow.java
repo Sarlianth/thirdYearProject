@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,6 +38,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
+import javax.swing.ImageIcon;
 
 public class mainWindow extends JFrame {
 
@@ -63,12 +65,23 @@ public class mainWindow extends JFrame {
 	private JLabel lblNewLabel = new JLabel("Source station:");
 	private	JLabel lblDestination = new JLabel("Destination:");
 	private final static JScrollPane scrollPane = new JScrollPane();
+	private final static JScrollPane scrollPane_1 = new JScrollPane();
 	private static JTable table;
+	private static JTable table_1;
 	private final JLabel lblSelectDate = new JLabel("Select date:");
 	private final JLabel lblPassanger = new JLabel("Passangers:");
 	private final JButton btnClear = new JButton("Clear");
 	private static JDatePickerImpl datePicker;
 	private static JPanel panel_4 = new JPanel();
+	private final JLabel logoTimetable = new JLabel("");
+	private static JLabel lblStudent_1 = new JLabel("Student: \u20AC");
+	private static JLabel lblAdult_1 = new JLabel("Adult: \u20AC");
+	private static JLabel studentPrice = new JLabel("0.0");
+	private static JLabel adultPrice = new JLabel("0.0");
+	private static JLabel lblTotal = new JLabel("Total: \u20AC");
+	private static JLabel totalPriceLbl = new JLabel("0.0");
+	private static JComboBox comboBox_adult = new JComboBox();
+	private static JComboBox comboBox_student = new JComboBox();
 		
 	/**
 	 * Launch the application.
@@ -129,8 +142,8 @@ public class mainWindow extends JFrame {
 		populate();
 		
 		tabbedPane.addTab("Reservation", panel);
-		tabbedPane.addTab("Bus management", panel_1);
-		tabbedPane.addTab("Admin panel", panel_2);
+		tabbedPane.addTab("Administration", panel_1);
+		tabbedPane.addTab("Bus timetable", panel_2);
 		tabbedPane.addTab("Tickets", panel_3);
 		
 		panel.setLayout(null);
@@ -180,6 +193,7 @@ public class mainWindow extends JFrame {
 					        stmt.executeUpdate(strSelect);
 					        
 					        refreshBuses();
+					        refreshTimetable();
 
 					      } catch(SQLException ex) {
 					    	  ex.printStackTrace();
@@ -227,13 +241,35 @@ public class mainWindow extends JFrame {
 		btnRefresh.setBounds(445, 11, 89, 23);
 		panel_1.add(btnRefresh);
 		panel_2.setBackground(Color.DARK_GRAY);
+		
+		scrollPane_1.setBounds(10, 41, 524, 205);
+		panel_2.add(scrollPane_1);
+		logoTimetable.setIcon(new ImageIcon(mainWindow.class.getResource("/ie/gmit/g00309646/images/text1.png")));
+		logoTimetable.setBounds(10, 0, 357, 43);
+		
+		panel_2.add(logoTimetable);
+		
+		JButton btnNewButton_1 = new JButton("");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				refreshTimetable();
+			}
+		});
+		btnNewButton_1.setOpaque(false);
+		btnNewButton_1.setContentAreaFilled(false);
+		btnNewButton_1.setBorderPainted(false);
+		btnNewButton_1.setIcon(new ImageIcon(mainWindow.class.getResource("/ie/gmit/g00309646/images/refresh.png")));
+		btnNewButton_1.setBounds(430, 7, 104, 36);
+		panel_2.add(btnNewButton_1);
+		refreshTimetable();
+		
 		panel_3.setBackground(Color.DARK_GRAY);
 		
 		//if current user does not have administrator privileges disable the admin panel tab 
 		if(!if_admin){
 			//tabbedPane.setEnabledAt(2, false);
 			//Remove admin tab if user isn't authenticated as admin
-			tabbedPane.removeTabAt(2);
+			tabbedPane.removeTabAt(1);
 		}
 		
 		lblNewLabel.setForeground(Color.WHITE);
@@ -263,9 +299,7 @@ public class mainWindow extends JFrame {
 		panel.add(comboBox_2);
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				enablePanel();
-				
 			}
 		});
 
@@ -345,11 +379,10 @@ public class mainWindow extends JFrame {
 		
 		panel_4.setBackground(Color.DARK_GRAY);
 		panel_4.setForeground(Color.WHITE);
-		panel_4.setBounds(10, 157, 428, 80);
+		panel_4.setBounds(10, 157, 524, 80);
 		panel.add(panel_4);
 		panel_4.setLayout(null);
 		
-		JComboBox comboBox_student = new JComboBox();
 		comboBox_student.setBounds(234, 45, 45, 20);
 		panel_4.add(comboBox_student);
 		
@@ -357,10 +390,33 @@ public class mainWindow extends JFrame {
 		lblStudent.setBounds(182, 47, 54, 14);
 		panel_4.add(lblStudent);
 		lblStudent.setForeground(Color.WHITE);
+	
 		
-		JComboBox comboBox_adult = new JComboBox();
 		comboBox_adult.setBounds(127, 45, 45, 20);
 		panel_4.add(comboBox_adult);
+		comboBox_adult.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		        double total = 0.00;
+		        
+		        total = (Integer) comboBox_adult.getSelectedItem() * 12.45;
+
+		        adultPrice.setText(""+round(total, 2));
+		        
+		        calculateTotal();
+		    }
+		});
+		
+		comboBox_student.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		        double total = 0.00;
+		        
+		        total = (Integer) comboBox_student.getSelectedItem() * 9.25;
+
+		        studentPrice.setText(""+round(total, 2));
+		        
+		        calculateTotal();
+		    }
+		});
 		
 		JLabel lblAdult = new JLabel("Adult:");
 		lblAdult.setBounds(87, 47, 45, 14);
@@ -373,16 +429,16 @@ public class mainWindow extends JFrame {
 		panel_4.add(lblSelectDate);
 		lblSelectDate.setForeground(Color.WHITE);
 		datePicker = new JDatePickerImpl(datePanel);
-		datePicker.setBounds(114, 11, 118, 25);
+		datePicker.setBounds(127, 9, 152, 25);
 		panel_4.add(datePicker);
 		datePicker.getJFormattedTextField().setBounds(0, 0, 229, 23);
-		
+
 		for(int i=0;i<=15;i++){
 			comboBox_adult.addItem(new Integer(i));
 			comboBox_student.addItem(new Integer(i));
 		}
-		
-		comboBox_student.setSelectedItem(1);
+		comboBox_student.setSelectedItem(0);
+		comboBox_adult.setSelectedItem(0);
 		model.setDate(2017, 3, 24);
 		model.setSelected(true);
 		
@@ -431,21 +487,43 @@ public class mainWindow extends JFrame {
 				
 			}
 		});
-		btnNewButton.setBounds(317, 11, 105, 23);
+		btnNewButton.setBounds(409, 11, 105, 23);
 		panel_4.add(btnNewButton);
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				comboBox_adult.setSelectedItem(0);
-				comboBox_student.setSelectedItem(1);
+				comboBox_student.setSelectedItem(0);
 				model.setDate(2017, 3, 24);
-				
 			}
 		});
-		btnClear.setBounds(317, 44, 105, 23);
+		btnClear.setBounds(409, 44, 105, 23);
 		
 		panel_4.add(btnClear);
-		button.setBounds(445, 61, 89, 170);
+		lblStudent_1.setForeground(Color.WHITE);
+		lblStudent_1.setBounds(283, 15, 59, 14);
+		
+		panel_4.add(lblStudent_1);
+		lblAdult_1.setForeground(Color.WHITE);
+		lblAdult_1.setBounds(298, 31, 44, 14);
+		
+		panel_4.add(lblAdult_1);
+		studentPrice.setForeground(Color.WHITE);
+		studentPrice.setBounds(342, 15, 46, 14);
+		
+		panel_4.add(studentPrice);
+		adultPrice.setForeground(Color.WHITE);
+		adultPrice.setBounds(342, 31, 46, 14);
+		
+		panel_4.add(adultPrice);
+		lblTotal.setForeground(Color.WHITE);
+		lblTotal.setBounds(299, 48, 44, 14);
+		
+		panel_4.add(lblTotal);
+		totalPriceLbl.setForeground(Color.WHITE);
+		totalPriceLbl.setBounds(342, 48, 46, 14);
+		
+		panel_4.add(totalPriceLbl);
+		button.setBounds(445, 61, 89, 85);
 		panel.add(button);
 		
 		//////////////////////////////////////////////
@@ -506,6 +584,30 @@ public class mainWindow extends JFrame {
 			table.setBorder(null);
 			table.setBackground(Color.GRAY);
 			table.setBounds(10, 11, 192, 63);
+			table.setGridColor(Color.LIGHT_GRAY);
+
+	      } catch(SQLException ex) {
+	    	  ex.printStackTrace();
+	      }
+	}
+	
+	public static void refreshTimetable(){
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Statement stmt = conn.createStatement();
+			
+			String strSelect = "select * from bus_table";
+	 
+	        ResultSet rset = stmt.executeQuery(strSelect);
+	 
+        	table_1 = new JTable(buildTableModel(rset));
+	        scrollPane_1.setViewportView(table_1);
+	        table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        table_1.setForeground(Color.WHITE);
+			table_1.setBorder(null);
+			table_1.setBackground(Color.GRAY);
+			table_1.setBounds(10, 11, 192, 63);
+			table_1.setGridColor(Color.LIGHT_GRAY);
 
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
@@ -549,6 +651,12 @@ public class mainWindow extends JFrame {
 		for (Component cp : panel_4.getComponents() ){
 	        cp.setEnabled(false);
 		}
+		
+		adultPrice.setText("0.0");
+		studentPrice.setText("0.0");
+		totalPriceLbl.setText("0.0");
+		comboBox_student.setSelectedItem(0);
+		comboBox_adult.setSelectedItem(0);
 		datePicker.getJFormattedTextField().setEnabled(false);
 	}
 	
@@ -556,6 +664,33 @@ public class mainWindow extends JFrame {
 		for (Component cp : panel_4.getComponents() ){
 	        cp.setEnabled(true);
 		}
+		adultPrice.setText("0.0");
+		studentPrice.setText("0.0");
+		totalPriceLbl.setText("0.0");
+		comboBox_student.setSelectedItem(0);
+		comboBox_adult.setSelectedItem(0);
 		datePicker.getJFormattedTextField().setEnabled(true);
+	}
+
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
+
+	public void calculateTotal(){
+        double totalPrice = 0.00;
+        double student = 0.00;
+        double adult = 0.00;
+        
+        student = Double.parseDouble(studentPrice.getText());
+        adult = Double.parseDouble(adultPrice.getText());
+        
+        totalPrice = student + adult;
+        
+        totalPriceLbl.setText(""+totalPrice);
 	}
 }

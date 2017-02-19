@@ -150,6 +150,7 @@ public class updateBus extends JFrame {
 			        stmt.executeUpdate(strSelect);
 			        
 			        mainWindow.refreshBuses();
+			        mainWindow.refreshTimetable();
 			        finish();
 
 			      } catch(SQLException ex) {
