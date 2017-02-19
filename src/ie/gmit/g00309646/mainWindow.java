@@ -20,6 +20,7 @@ import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -35,6 +36,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 
 public class mainWindow extends JFrame {
 
@@ -76,6 +78,17 @@ public class mainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+				    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				        if ("Nimbus".equals(info.getName())) {
+				            UIManager.setLookAndFeel(info.getClassName());
+				            break;
+				        }
+				    }
+				} catch (Exception e) {
+				    // If Nimbus is not available, you can set the GUI to another look and feel.
+				}
+				
+				try {
 					mainWindow frame = new mainWindow(false, 0);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
@@ -99,7 +112,7 @@ public class mainWindow extends JFrame {
 		setTitle("IrishBusApp");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 673, 343);
+		setBounds(100, 100, 570, 317);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -113,7 +126,7 @@ public class mainWindow extends JFrame {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setForeground(Color.WHITE);
 		tabbedPane.setBackground(Color.DARK_GRAY);
-		tabbedPane.setBounds(10, 11, 549, 295);
+		tabbedPane.setBounds(10, 11, 549, 270);
 		contentPane.add(tabbedPane);
 		
 		//get the bus stations from database and populate them into array lists
@@ -271,22 +284,7 @@ public class mainWindow extends JFrame {
 			}
 		});
 		
-		button.setBounds(569, 11, 88, 295);
-		contentPane.add(button);
-		
 		refreshBuses();
-		
-		//////////////////////////////////////////////
-		///////LOGOUT BUTTON ACTION LISTENER/////////
-		/////////////////////////////////////////////
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				finish();
-				login frame = new login();
-				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
-			}
-		});
 		
 		//////////////////////////////////////////////
 		///////SEARCH BUTTON ACTION LISTENER/////////
@@ -345,10 +343,11 @@ public class mainWindow extends JFrame {
 		
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
+		panel_4.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
 		
 		panel_4.setBackground(Color.DARK_GRAY);
 		panel_4.setForeground(Color.WHITE);
-		panel_4.setBounds(10, 157, 524, 99);
+		panel_4.setBounds(10, 157, 428, 80);
 		panel.add(panel_4);
 		panel_4.setLayout(null);
 		
@@ -376,7 +375,7 @@ public class mainWindow extends JFrame {
 		panel_4.add(lblSelectDate);
 		lblSelectDate.setForeground(Color.WHITE);
 		datePicker = new JDatePickerImpl(datePanel);
-		datePicker.setBounds(114, 11, 118, 23);
+		datePicker.setBounds(114, 11, 118, 25);
 		panel_4.add(datePicker);
 		datePicker.getJFormattedTextField().setBounds(0, 0, 229, 23);
 		
@@ -448,6 +447,20 @@ public class mainWindow extends JFrame {
 		btnClear.setBounds(317, 44, 105, 23);
 		
 		panel_4.add(btnClear);
+		button.setBounds(445, 61, 89, 170);
+		panel.add(button);
+		
+		//////////////////////////////////////////////
+		///////LOGOUT BUTTON ACTION LISTENER/////////
+		/////////////////////////////////////////////
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				finish();
+				login frame = new login();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
 		
 		disablePanel();
     }

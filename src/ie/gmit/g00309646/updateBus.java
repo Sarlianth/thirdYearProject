@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -45,6 +47,18 @@ public class updateBus extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				
+				try {
+				    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				        if ("Nimbus".equals(info.getName())) {
+				            UIManager.setLookAndFeel(info.getClassName());
+				            break;
+				        }
+				    }
+				} catch (Exception e) {
+				    // If Nimbus is not available, you can set the GUI to another look and feel.
+				}
+				
 				try {
 					updateBus frame = new updateBus(false, 1);
 					frame.setLocationRelativeTo(null);
@@ -152,25 +166,25 @@ public class updateBus extends JFrame {
 		
 		sourceField = new JTextField();
 		sourceField.setColumns(10);
-		sourceField.setBounds(106, 42, 162, 20);
+		sourceField.setBounds(106, 42, 162, 23);
 		contentPane.add(sourceField);
 		
 		destinationField = new JTextField();
 		destinationField.setColumns(10);
-		destinationField.setBounds(106, 73, 162, 20);
+		destinationField.setBounds(106, 73, 162, 23);
 		contentPane.add(destinationField);
 		
 		busIDField = new JTextField("");
-		busIDField.setBounds(106, 11, 162, 20);
+		busIDField.setBounds(106, 11, 162, 23);
 		contentPane.add(busIDField);
 		busIDField.setColumns(10);
 		
 		comboBox.setModel(new DefaultComboBoxModel(hours.toArray()));
-		comboBox.setBounds(106, 104, 46, 20);
+		comboBox.setBounds(106, 104, 50, 20);
 		contentPane.add(comboBox);
 		
 		comboBox_1.setModel(new DefaultComboBoxModel(mins.toArray()));
-		comboBox_1.setBounds(162, 103, 46, 20);
+		comboBox_1.setBounds(162, 104, 50, 20);
 		contentPane.add(comboBox_1);
 		
 		comboBox_2 = new JComboBox(choice);
