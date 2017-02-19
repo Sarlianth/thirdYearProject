@@ -40,14 +40,11 @@ public class addBus extends JFrame {
 			public void run() {
 				
 				try {
-				    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				        if ("Nimbus".equals(info.getName())) {
-				            UIManager.setLookAndFeel(info.getClassName());
-				            break;
-				        }
-				    }
-				} catch (Exception e) {
-				    // If Nimbus is not available, you can set the GUI to another look and feel.
+					org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+					UIManager.put("RootPane.setupButtonVisible", false);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 				try {
@@ -78,12 +75,11 @@ public class addBus extends JFrame {
 		
 		String[] choice = {"AM", "PM"};
 		setResizable(false);
-		setBackground(Color.DARK_GRAY);
 		setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		setTitle("Add new bus");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 300, 197);
+		setBounds(100, 100, 350, 240);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -198,7 +194,7 @@ public class addBus extends JFrame {
 		comboBox_1.setSelectedItem(30);
 		
 		comboBox_2 = new JComboBox(choice);
-		comboBox_2.setBounds(218, 104, 50, 20);
+		comboBox_2.setBounds(218, 104, 52, 20);
 		contentPane.add(comboBox_2);
 		comboBox_2.setSelectedItem("AM");
 	}

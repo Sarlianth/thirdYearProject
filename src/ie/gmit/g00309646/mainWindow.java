@@ -77,15 +77,13 @@ public class mainWindow extends JFrame {
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				
 				try {
-				    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				        if ("Nimbus".equals(info.getName())) {
-				            UIManager.setLookAndFeel(info.getClassName());
-				            break;
-				        }
-				    }
-				} catch (Exception e) {
-				    // If Nimbus is not available, you can set the GUI to another look and feel.
+					org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+					UIManager.put("RootPane.setupButtonVisible", false);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 				try {
@@ -105,17 +103,15 @@ public class mainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public mainWindow(boolean if_admin, int userID) {
-		
 		setResizable(false);
-		setBackground(Color.DARK_GRAY);
 		setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		setTitle("IrishBusApp");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 570, 317);
+		setBounds(100, 100, 624, 385);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		//contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -124,9 +120,9 @@ public class mainWindow extends JFrame {
 		/////////////////////////////////////////////
 		UIManager.put("TabbedPane.selected", Color.getHSBColor(300,150,200));
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setForeground(Color.WHITE);
+		tabbedPane.setForeground(Color.DARK_GRAY);
 		tabbedPane.setBackground(Color.DARK_GRAY);
-		tabbedPane.setBounds(10, 11, 549, 270);
+		tabbedPane.setBounds(10, 11, 549, 285);
 		contentPane.add(tabbedPane);
 		
 		//get the bus stations from database and populate them into array lists
@@ -235,7 +231,9 @@ public class mainWindow extends JFrame {
 		
 		//if current user does not have administrator privileges disable the admin panel tab 
 		if(!if_admin){
-			tabbedPane.setEnabledAt(2, false);
+			//tabbedPane.setEnabledAt(2, false);
+			//Remove admin tab if user isn't authenticated as admin
+			tabbedPane.removeTabAt(2);
 		}
 		
 		lblNewLabel.setForeground(Color.WHITE);

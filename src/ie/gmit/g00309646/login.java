@@ -40,14 +40,11 @@ public class login extends JFrame {
 			public void run() {
 				
 				try {
-				    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				        if ("Nimbus".equals(info.getName())) {
-				            UIManager.setLookAndFeel(info.getClassName());
-				            break;
-				        }
-				    }
-				} catch (Exception e) {
-				    // If Nimbus is not available, you can set the GUI to another look and feel.
+					org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+					UIManager.put("RootPane.setupButtonVisible", false);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 				try {
@@ -80,7 +77,7 @@ public class login extends JFrame {
 		setResizable(false);
 		setTitle("IrishBusApp - Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 252, 142);
+		setBounds(100, 100, 292, 187);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
