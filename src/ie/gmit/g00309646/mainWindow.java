@@ -82,6 +82,8 @@ public class mainWindow extends JFrame {
 	private static JLabel totalPriceLbl = new JLabel("0.0");
 	private static JComboBox comboBox_adult = new JComboBox();
 	private static JComboBox comboBox_student = new JComboBox();
+	private static JLabel lblAdult = new JLabel("Adult:");
+	private static JLabel lblStudent = new JLabel("Student:");
 		
 	/**
 	 * Launch the application.
@@ -385,8 +387,8 @@ public class mainWindow extends JFrame {
 		
 		comboBox_student.setBounds(234, 45, 45, 20);
 		panel_4.add(comboBox_student);
+		lblStudent.setFont(new Font("Arial", Font.PLAIN, 12));
 		
-		JLabel lblStudent = new JLabel("Student:");
 		lblStudent.setBounds(182, 47, 54, 14);
 		panel_4.add(lblStudent);
 		lblStudent.setForeground(Color.WHITE);
@@ -402,6 +404,9 @@ public class mainWindow extends JFrame {
 
 		        adultPrice.setText(""+round(total, 2));
 		        
+		        lblStudent.setForeground(Color.WHITE);
+				lblAdult.setForeground(Color.WHITE);
+		        
 		        calculateTotal();
 		    }
 		});
@@ -414,11 +419,14 @@ public class mainWindow extends JFrame {
 
 		        studentPrice.setText(""+round(total, 2));
 		        
+		        lblStudent.setForeground(Color.WHITE);
+				lblAdult.setForeground(Color.WHITE);
+		        
 		        calculateTotal();
 		    }
 		});
+		lblAdult.setFont(new Font("Arial", Font.PLAIN, 12));
 		
-		JLabel lblAdult = new JLabel("Adult:");
 		lblAdult.setBounds(87, 47, 45, 14);
 		panel_4.add(lblAdult);
 		lblAdult.setForeground(Color.WHITE);
@@ -429,7 +437,7 @@ public class mainWindow extends JFrame {
 		panel_4.add(lblSelectDate);
 		lblSelectDate.setForeground(Color.WHITE);
 		datePicker = new JDatePickerImpl(datePanel);
-		datePicker.setBounds(127, 9, 152, 25);
+		datePicker.setBounds(87, 9, 192, 25);
 		panel_4.add(datePicker);
 		datePicker.getJFormattedTextField().setBounds(0, 0, 229, 23);
 
@@ -446,45 +454,52 @@ public class mainWindow extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String[] selected = comboBox_2.getSelectedItem().toString().split(" : "); // <-- selected[0] contains the bus id that we want to book the ticket for..
-				
-				int bus_id = 0;
-				String bus_number = null;
-				String depart_from = null;
-				String going_to = null;
-				String bus_time = null;
-				
-				try {
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
-					Statement stmt = conn.createStatement();
+				if(!comboBox_student.getSelectedItem().equals(0) || !comboBox_adult.getSelectedItem().equals(0)){
+					String[] selected = comboBox_2.getSelectedItem().toString().split(" : "); // <-- selected[0] contains the bus id that we want to book the ticket for..
 					
-					String strSelect = "select * from bus_table where bus_id="+selected[0];
-			 
-			        ResultSet rset = stmt.executeQuery(strSelect);
-			 
-		        	while(rset.next()) {
-		        		bus_id = rset.getInt("bus_id");
-		        		bus_number = rset.getString("bus_number");
-		        		depart_from = rset.getString("depart_from");
-		        		going_to = rset.getString("going_to");
-		        		bus_time = rset.getString("bus_time");
-			        }  
-		        	
-		        	/////////////////////////////////
-		        	////checking all information/////
-		        	/////////////////////////////////
-		        	System.out.println("Bus ID - "+bus_id);
-		        	System.out.println("Bus number - "+bus_number);
-		        	System.out.println("Joutney date - "+model.getDay()+"/"+model.getMonth()+"/"+model.getYear());
-		        	System.out.println("Adult quantity - "+comboBox_adult.getSelectedIndex()); 
-		        	System.out.println("Student quantity - "+comboBox_student.getSelectedItem());
-		        	System.out.println("User ID - "+userID);
-		        	
+					int bus_id = 0;
+					String bus_number = null;
+					String depart_from = null;
+					String going_to = null;
+					String bus_time = null;
+					
+					try {
+						Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+						Statement stmt = conn.createStatement();
+						
+						String strSelect = "select * from bus_table where bus_id="+selected[0];
+				 
+				        ResultSet rset = stmt.executeQuery(strSelect);
+				 
+			        	while(rset.next()) {
+			        		bus_id = rset.getInt("bus_id");
+			        		bus_number = rset.getString("bus_number");
+			        		depart_from = rset.getString("depart_from");
+			        		going_to = rset.getString("going_to");
+			        		bus_time = rset.getString("bus_time");
+				        }  
+			        	
+			        	/////////////////////////////////
+			        	////checking all information/////
+			        	/////////////////////////////////
+			        	System.out.println("Bus ID - "+bus_id);
+			        	System.out.println("Bus number - "+bus_number);
+			        	System.out.println("Joutney date - "+model.getDay()+"/"+model.getMonth()+"/"+model.getYear());
+			        	System.out.println("Adult quantity - "+comboBox_adult.getSelectedIndex()); 
+			        	System.out.println("Student quantity - "+comboBox_student.getSelectedItem());
+			        	System.out.println("User ID - "+userID);
+			        	System.out.println("Total price - "+"€"+totalPriceLbl.getText());
+			        	
 
-			      } catch(SQLException ex) {
-			    	  ex.printStackTrace();
-			      }
-				
+				      } catch(SQLException ex) {
+				    	  ex.printStackTrace();
+				      }
+				}
+				else{
+					lblStudent.setForeground(Color.cyan);
+					lblAdult.setForeground(Color.cyan);
+					JOptionPane.showMessageDialog(null, "Please select passengers amount");
+				}
 			}
 		});
 		btnNewButton.setBounds(409, 11, 105, 23);
