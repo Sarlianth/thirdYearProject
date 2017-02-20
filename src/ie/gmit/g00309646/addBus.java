@@ -144,6 +144,7 @@ public class addBus extends JFrame {
 			        
 			        mainWindow.refreshBuses();
 			        mainWindow.refreshTimetable();
+			        mainWindow.populate();
 			        finish();
 
 			      } catch(SQLException ex) {

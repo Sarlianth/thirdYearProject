@@ -84,7 +84,7 @@ public class updateBus extends JFrame {
 		String[] choice = {"AM", "PM"};
 		setResizable(false);
 		setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		setTitle("Update bus");
+		setTitle("Update bus - "+key);
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 350, 240);
@@ -151,6 +151,7 @@ public class updateBus extends JFrame {
 			        
 			        mainWindow.refreshBuses();
 			        mainWindow.refreshTimetable();
+			        mainWindow.populate();
 			        finish();
 
 			      } catch(SQLException ex) {

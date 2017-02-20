@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.ThreadLocalRandom;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -28,6 +29,10 @@ import java.awt.Component;
 
 import javax.swing.JComboBox;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -51,9 +56,9 @@ public class mainWindow extends JFrame {
 	private JPanel contentPane;
 	private static ArrayList<String> sourceStations = new ArrayList<String>();
 	private static ArrayList<String> destinationStations = new ArrayList<String>();
-	private JComboBox comboBox = new JComboBox();
-	private JComboBox comboBox_1 = new JComboBox();
-	private static JLabel lblAvailableBus = new JLabel("Available bus: ");
+	private static JComboBox comboBox = new JComboBox();
+	private static JComboBox comboBox_1 = new JComboBox();
+	private static JLabel lblAvailableBus = new JLabel("Available buses: ");
 	private static ArrayList<String> availableBuses = new ArrayList<String>();
 	private static JComboBox comboBox_2 = new JComboBox();
 	private static JTabbedPane tabbedPane;
@@ -61,7 +66,7 @@ public class mainWindow extends JFrame {
 	private static JPanel panel_1 = new JPanel();
 	private static JPanel panel_3 = new JPanel();
 	private static JPanel panel = new JPanel();
-	private JButton btnSearch = new JButton("Look for buses");
+	private JButton btnSearch = new JButton("Search");
 	private JButton button = new JButton("Logout");
 	private JButton btnSelect = new JButton("Choose bus");
 	private JLabel lblNewLabel = new JLabel("Source station:");
@@ -71,7 +76,6 @@ public class mainWindow extends JFrame {
 	private static JTable table;
 	private static JTable table_1;
 	private final JLabel lblSelectDate = new JLabel("Select date:");
-	private final JLabel lblPassanger = new JLabel("Passangers:");
 	private final JButton btnClear = new JButton("Clear");
 	private static JDatePickerImpl datePicker;
 	private static JPanel panel_4 = new JPanel();
@@ -280,6 +284,36 @@ public class mainWindow extends JFrame {
 		textField.setColumns(10);
 		
 		JButton btnNewButton_2 = new JButton("Search");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				int ticketID;
+				
+				ticketID = Integer.parseInt(textField.getText());
+				
+				try {
+					Connection conn3 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+					Statement stmt3 = conn3.createStatement();
+					
+					String strSelect3 = "select * from ticket where ticket_id="+ticketID;
+			 
+			        ResultSet rset3 = stmt3.executeQuery(strSelect3);
+			 
+		        	if(rset3.next()){
+		        		displayTicket frame = new displayTicket(ticketID);
+		        		frame.setVisible(true);
+		        		frame.setLocationRelativeTo(null);
+		        	}
+		        	else{
+		        		JOptionPane.showMessageDialog(null, "Sorry, ticket with ID "+ticketID+" doesn't exist.");
+		        	}
+		        	
+			      } catch(SQLException ex) {
+			    	  ex.printStackTrace();
+			      }
+				
+			}
+		});
 		btnNewButton_2.setBounds(351, 122, 89, 23);
 		panel_3.add(btnNewButton_2);
 		
@@ -289,13 +323,17 @@ public class mainWindow extends JFrame {
 			//Remove admin tab if user isn't authenticated as admin
 			tabbedPane.removeTabAt(1);
 		}
+		lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(10, 26, 91, 19);
+		lblNewLabel.setBounds(7, 26, 105, 19);
 		panel.add(lblNewLabel);
+		lblDestination.setFont(new Font("Arial", Font.PLAIN, 13));
+		lblDestination.setHorizontalAlignment(SwingConstants.RIGHT);
 	
 		lblDestination.setForeground(Color.WHITE);
-		lblDestination.setBounds(239, 28, 79, 14);
+		lblDestination.setBounds(238, 28, 71, 14);
 		panel.add(lblDestination);
 		
 		comboBox.setBounds(114, 25, 118, 20);
@@ -305,12 +343,15 @@ public class mainWindow extends JFrame {
 		comboBox_1.setBounds(313, 25, 118, 20);
 		panel.add(comboBox_1);
 		comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
+		btnSearch.setBackground(Color.WHITE);
 		
 		btnSearch.setBounds(114, 61, 317, 23);
 		panel.add(btnSearch);
+		lblAvailableBus.setFont(new Font("Arial", Font.PLAIN, 13));
+		lblAvailableBus.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAvailableBus.setForeground(Color.WHITE);
 		
-		lblAvailableBus.setBounds(10, 96, 91, 19);
+		lblAvailableBus.setBounds(10, 96, 105, 19);
 		panel.add(lblAvailableBus);
 		
 		comboBox_2.setBounds(114, 95, 317, 20);
@@ -324,15 +365,6 @@ public class mainWindow extends JFrame {
 		btnSelect.setBounds(114, 123, 317, 23);
 		panel.add(btnSelect);
 		btnSelect.setEnabled(false);
-		
-		JButton btnRefresh_1 = new JButton("Refresh");
-		btnRefresh_1.setBounds(445, 24, 89, 23);
-		panel.add(btnRefresh_1);
-		btnRefresh_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				populate();
-			}
-		});
 		
 		refreshBuses();
 		
@@ -401,16 +433,16 @@ public class mainWindow extends JFrame {
 		panel.add(panel_4);
 		panel_4.setLayout(null);
 		
-		comboBox_student.setBounds(234, 45, 45, 20);
+		comboBox_student.setBounds(222, 47, 45, 20);
 		panel_4.add(comboBox_student);
-		lblStudent.setFont(new Font("Arial", Font.PLAIN, 12));
+		lblStudent.setFont(new Font("Arial", Font.PLAIN, 13));
 		
-		lblStudent.setBounds(182, 47, 54, 14);
+		lblStudent.setBounds(163, 49, 54, 14);
 		panel_4.add(lblStudent);
 		lblStudent.setForeground(Color.WHITE);
 	
 		
-		comboBox_adult.setBounds(127, 45, 45, 20);
+		comboBox_adult.setBounds(97, 47, 45, 20);
 		panel_4.add(comboBox_adult);
 		comboBox_adult.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
@@ -441,14 +473,12 @@ public class mainWindow extends JFrame {
 		        calculateTotal();
 		    }
 		});
-		lblAdult.setFont(new Font("Arial", Font.PLAIN, 12));
+		lblAdult.setFont(new Font("Arial", Font.PLAIN, 13));
 		
-		lblAdult.setBounds(87, 47, 45, 14);
+		lblAdult.setBounds(54, 49, 45, 14);
 		panel_4.add(lblAdult);
 		lblAdult.setForeground(Color.WHITE);
-		lblPassanger.setBounds(10, 48, 91, 14);
-		panel_4.add(lblPassanger);
-		lblPassanger.setForeground(Color.WHITE);
+		lblSelectDate.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblSelectDate.setBounds(10, 15, 91, 14);
 		panel_4.add(lblSelectDate);
 		lblSelectDate.setForeground(Color.WHITE);
@@ -513,18 +543,31 @@ public class mainWindow extends JFrame {
 			        	int dbStudent = (int) comboBox_student.getSelectedItem();
 			        	int dbUserID = userID;
 			        	double dbPrice = Double.parseDouble(totalPriceLbl.getText());
+						//Generating random number using ThreadLocalRandom.current() method
+						//This approach has the advantage of not needing to explicitly initialize a java.util.Random instance
+						//which can be a source of confusion and error if used inappropriately
+			        	int tempTicketID = ThreadLocalRandom.current().nextInt(44444444, 999999999 + 1);
 
 			        	//System.out.println(dbBusID+"\n"+dbBusNumber+"\n"+dbJourneyDate+"\n"+dbAdult+"\n"+dbStudent+"\n"+dbUserID+"\n"+dbPrice);
 			        	try {
 							Connection conn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
 							Statement stmt2 = conn2.createStatement();
 							
-							String strSelect2 = "insert into ticket (bus_id, bus_number, journey_date, adult_quantity, student_quantity, user_id, totalPrice) "
-									+ "values ('"+dbBusID+"', '"+dbBusNumber+"', '"+dbJourneyDate+"', '"+dbAdult+"', '"+dbStudent+"', '"+dbUserID+"', '"+dbPrice+"')";
-					 
+							String strSelect2 = "insert into ticket (bus_id, bus_number, journey_date, adult_quantity, student_quantity, user_id, totalPrice, ticket_id) "
+									+ "values ('"+dbBusID+"', '"+dbBusNumber+"', '"+dbJourneyDate+"', '"+dbAdult+"', '"
+									+dbStudent+"', '"+dbUserID+"', '"+dbPrice+"', '"+tempTicketID+"')";
+
 					        stmt2.executeUpdate(strSelect2);
 					        
-					        JOptionPane.showMessageDialog(null, "Thanks for buying the ticket.");
+					        StringSelection selection = new StringSelection(String.valueOf(tempTicketID));
+					        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					        clipboard.setContents(selection, selection);
+					        
+					        JOptionPane.showMessageDialog(null, "Thanks for buying the ticket \nMake sure to remember or save your ticket ID \nTicket ID - "
+					        										+tempTicketID+"\nIt has been automatically copied to your clipboard (ctrl+v)");
+					        displayTicket frame = new displayTicket(tempTicketID);
+					        frame.setVisible(true);
+					        frame.setLocationRelativeTo(null);
 
 					      } catch(SQLException ex) {
 					    	  ex.printStackTrace();
@@ -555,30 +598,30 @@ public class mainWindow extends JFrame {
 		
 		panel_4.add(btnClear);
 		lblStudent_1.setForeground(Color.WHITE);
-		lblStudent_1.setBounds(283, 15, 59, 14);
+		lblStudent_1.setBounds(294, 15, 59, 14);
 		
 		panel_4.add(lblStudent_1);
 		lblAdult_1.setForeground(Color.WHITE);
-		lblAdult_1.setBounds(298, 31, 44, 14);
+		lblAdult_1.setBounds(309, 31, 44, 14);
 		
 		panel_4.add(lblAdult_1);
 		studentPrice.setForeground(Color.WHITE);
-		studentPrice.setBounds(342, 15, 46, 14);
+		studentPrice.setBounds(353, 15, 46, 14);
 		
 		panel_4.add(studentPrice);
 		adultPrice.setForeground(Color.WHITE);
-		adultPrice.setBounds(342, 31, 46, 14);
+		adultPrice.setBounds(353, 31, 46, 14);
 		
 		panel_4.add(adultPrice);
 		lblTotal.setForeground(Color.WHITE);
-		lblTotal.setBounds(299, 48, 44, 14);
+		lblTotal.setBounds(310, 48, 44, 14);
 		
 		panel_4.add(lblTotal);
 		totalPriceLbl.setForeground(Color.WHITE);
-		totalPriceLbl.setBounds(342, 48, 46, 14);
+		totalPriceLbl.setBounds(353, 48, 46, 14);
 		
 		panel_4.add(totalPriceLbl);
-		button.setBounds(445, 61, 89, 85);
+		button.setBounds(445, 26, 89, 120);
 		panel.add(button);
 		
 		//////////////////////////////////////////////
@@ -674,7 +717,7 @@ public class mainWindow extends JFrame {
 		this.dispose();
 	}
 	
-	public void populate(){
+	public static void populate(){
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
 			Statement stmt = conn.createStatement();
