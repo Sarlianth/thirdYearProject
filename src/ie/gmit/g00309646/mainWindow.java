@@ -39,6 +39,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.ImageIcon;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class mainWindow extends JFrame {
 
@@ -84,6 +86,7 @@ public class mainWindow extends JFrame {
 	private static JComboBox comboBox_student = new JComboBox();
 	private static JLabel lblAdult = new JLabel("Adult:");
 	private static JLabel lblStudent = new JLabel("Student:");
+	private JTextField textField;
 		
 	/**
 	 * Launch the application.
@@ -266,6 +269,19 @@ public class mainWindow extends JFrame {
 		refreshTimetable();
 		
 		panel_3.setBackground(Color.DARK_GRAY);
+		
+		textField = new JTextField();
+		textField.setForeground(Color.DARK_GRAY);
+		textField.setBackground(Color.WHITE);
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setFont(new Font("Arial", Font.PLAIN, 25));
+		textField.setBounds(115, 116, 226, 35);
+		panel_3.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton_2 = new JButton("Search");
+		btnNewButton_2.setBounds(351, 122, 89, 23);
+		panel_3.add(btnNewButton_2);
 		
 		//if current user does not have administrator privileges disable the admin panel tab 
 		if(!if_admin){
@@ -482,13 +498,37 @@ public class mainWindow extends JFrame {
 			        	/////////////////////////////////
 			        	////checking all information/////
 			        	/////////////////////////////////
-			        	System.out.println("Bus ID - "+bus_id);
+			        	/*System.out.println("Bus ID - "+bus_id);
 			        	System.out.println("Bus number - "+bus_number);
 			        	System.out.println("Joutney date - "+model.getDay()+"/"+model.getMonth()+"/"+model.getYear());
 			        	System.out.println("Adult quantity - "+comboBox_adult.getSelectedIndex()); 
 			        	System.out.println("Student quantity - "+comboBox_student.getSelectedItem());
 			        	System.out.println("User ID - "+userID);
-			        	System.out.println("Total price - "+"€"+totalPriceLbl.getText());
+			        	System.out.println("Total price - "+"€");*/
+			        	
+			        	int dbBusID = bus_id;
+			        	String dbBusNumber = bus_number;
+			        	String dbJourneyDate = model.getDay()+"/"+model.getMonth()+"/"+model.getYear();
+			        	int dbAdult = (int) comboBox_adult.getSelectedItem();
+			        	int dbStudent = (int) comboBox_student.getSelectedItem();
+			        	int dbUserID = userID;
+			        	double dbPrice = Double.parseDouble(totalPriceLbl.getText());
+
+			        	//System.out.println(dbBusID+"\n"+dbBusNumber+"\n"+dbJourneyDate+"\n"+dbAdult+"\n"+dbStudent+"\n"+dbUserID+"\n"+dbPrice);
+			        	try {
+							Connection conn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+							Statement stmt2 = conn2.createStatement();
+							
+							String strSelect2 = "insert into ticket (bus_id, bus_number, journey_date, adult_quantity, student_quantity, user_id, totalPrice) "
+									+ "values ('"+dbBusID+"', '"+dbBusNumber+"', '"+dbJourneyDate+"', '"+dbAdult+"', '"+dbStudent+"', '"+dbUserID+"', '"+dbPrice+"')";
+					 
+					        stmt2.executeUpdate(strSelect2);
+					        
+					        JOptionPane.showMessageDialog(null, "Thanks for buying the ticket.");
+
+					      } catch(SQLException ex) {
+					    	  ex.printStackTrace();
+					      } // end of try/catch
 			        	
 
 				      } catch(SQLException ex) {
