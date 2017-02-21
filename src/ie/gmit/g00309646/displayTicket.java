@@ -3,30 +3,44 @@ package ie.gmit.g00309646;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.io.FileNotFoundException;
+//imports iText API to create PDF file from provided information
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.Date;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.JLabel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
-import java.awt.Component;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+
+import com.itextpdf.text.Anchor;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class displayTicket extends JFrame {
 
@@ -52,6 +66,27 @@ public class displayTicket extends JFrame {
 	private static JLabel ticketIDlbl = new JLabel("");
 	private final JLabel lblJourney = new JLabel("Journey:");
 	private final JLabel journeyLbl = new JLabel("");
+	private static int id = 0;
+	
+	private static int ticketDbBusID = 0;
+	private static String ticketDbBusNumber = "";
+	private static String ticketDbJourneyDate = "";
+	private static int ticketDbAdult = 0;
+	private static int ticketDbStudent = 0;
+	private static int ticketDbUserID = 0;
+	private static double ticketDbTotalPrice = 0.00;
+	private static String usersDbName = "";
+	private static String usersDbSurname = "";
+	private static String busDbSource = "";
+	private static String busDbDestination = "";
+	
+	//iText API for PDF file
+	private static String FILE = "./FirstPdf.pdf";
+	private static com.itextpdf.text.Font catFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	private static com.itextpdf.text.Font redFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, Font.PLAIN, BaseColor.RED);
+	private static com.itextpdf.text.Font subFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
+	private static com.itextpdf.text.Font smallBold = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+
 
 	/**
 	 * Launch the application.
@@ -88,19 +123,7 @@ public class displayTicket extends JFrame {
 			@Override
 			public void componentShown(ComponentEvent arg0) {
 				
-				int ticketDbBusID = 0;
-				String ticketDbBusNumber = "";
-				String ticketDbJourneyDate = "";
-				int ticketDbAdult = 0;
-				int ticketDbStudent = 0;
-				int ticketDbUserID = 0;
-				double ticketDbTotalPrice = 0.00;
-				
-				String usersDbName = "";
-				String usersDbSurname = "";
-				
-				String busDbSource = "";
-				String busDbDestination = "";
+				id = ticketID;
 				
 				
 				try {
@@ -301,6 +324,29 @@ public class displayTicket extends JFrame {
 		journeyLbl.setBounds(129, 95, 293, 17);
 		
 		contentPane.add(journeyLbl);
+		btnSavePdf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				try {
+					FILE = "./"+ticketID+".pdf";
+					Document document = new Document();
+					PdfWriter.getInstance(document, new FileOutputStream(FILE));
+					document.open();
+					addMetaData(document);
+					addPage(document);
+					document.close();
+					
+					JOptionPane.showMessageDialog(null, ticketID+".pdf successfully saved");
+					finish();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DocumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		btnSavePdf.setFont(new Font("Arial", Font.PLAIN, 14));
 		btnSavePdf.setBounds(230, 262, 109, 23);
 		contentPane.add(btnSavePdf);
@@ -309,4 +355,50 @@ public class displayTicket extends JFrame {
 	public void finish(){
 		this.dispose();
 	}
+	
+	
+	// iText allows to add metadata to the PDF which can be viewed in your Adobe
+    // Reader
+    // under File -> Properties
+    private static void addMetaData(Document document) {
+            document.addTitle("Ticket ID - "+id);
+            document.addKeywords("Java, MySQL, Project, IrishBus, App, Final, Year");
+            document.addAuthor("Adrian Sypos");
+            document.addCreator("Adrian Sypos");
+    }
+
+    private static void addPage(Document document) throws DocumentException {
+            Paragraph preface = new Paragraph();
+            
+            addEmptyLine(preface, 1);
+            preface.add(new Paragraph("Ticket ID - "+id, catFont));
+
+            addEmptyLine(preface, 1);
+            preface.add(new Paragraph("Ticket generated autimatically on " + new Date(),smallBold));
+            
+            addEmptyLine(preface, 3);
+            preface.add(new Paragraph("Ticket ID - "+String.valueOf(id), smallBold));
+            preface.add(new Paragraph("Bus ID - "+String.valueOf(ticketDbBusID), smallBold));
+            preface.add(new Paragraph("Bus name - "+ticketDbBusNumber, smallBold));
+            preface.add(new Paragraph("Journey - "+busDbSource+" - "+busDbDestination, smallBold));
+            preface.add(new Paragraph("Journey date - "+ticketDbJourneyDate, smallBold));
+            preface.add(new Paragraph("Adults - "+String.valueOf(ticketDbAdult), smallBold));
+            preface.add(new Paragraph("Students - "+String.valueOf(ticketDbStudent), smallBold));
+            preface.add(new Paragraph("Total price - "+"€"+String.valueOf(ticketDbTotalPrice), smallBold));
+            preface.add(new Paragraph("Bought by - "+usersDbName+" "+usersDbSurname, smallBold));
+
+            addEmptyLine(preface, 8);
+            preface.add(new Paragraph("Thank you for buying ticket with IrishBusApp", redFont));
+
+            document.add(preface);
+            // Start a new page
+            document.newPage();
+    }
+
+    private static void addEmptyLine(Paragraph paragraph, int number) {
+            for (int i = 0; i < number; i++) {
+                    paragraph.add(new Paragraph(" "));
+            }
+    }
+	
 }
