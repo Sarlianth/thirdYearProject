@@ -40,6 +40,12 @@ public class updateBus extends JFrame {
 	private String tempFrom;
 	private String tempTo;
 	private String tempTime;
+	
+	private static String dbHost = "sql8.freemysqlhosting.net";
+	private static String dbPort = "3306";
+	private static String dbNameCon = "sql8160217";
+	private static String dbUsername = "sql8160217";
+	private static String dbPassword = "XRN5N6f6BG";
 
 	/**
 	 * Launch the application.
@@ -142,7 +148,7 @@ public class updateBus extends JFrame {
 				}
 				
 				try {
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+					Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 					Statement stmt = conn.createStatement();
 					
 					String strSelect = "update bus_table set bus_number='"+bus_number+"', depart_from='"+depart_from+"', going_to='"+going_to+"', bus_time='"+bus_time+"' where bus_id="+key;
@@ -153,6 +159,9 @@ public class updateBus extends JFrame {
 			        mainWindow.refreshTimetable();
 			        mainWindow.populate();
 			        finish();
+			        
+			        stmt.close();
+					conn.close();
 
 			      } catch(SQLException ex) {
 			    	  ex.printStackTrace();
@@ -190,7 +199,7 @@ public class updateBus extends JFrame {
 		contentPane.add(comboBox_2);
 		
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 			Statement stmt = conn.createStatement();
 			
 			String strSelect = "select * from bus_table where bus_id="+key;
@@ -226,6 +235,10 @@ public class updateBus extends JFrame {
 	    		}
 	        }  
         	
+        	rset.close();
+	        stmt.close();
+			conn.close();
+			
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
 	      }

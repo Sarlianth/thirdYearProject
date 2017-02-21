@@ -45,6 +45,13 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class displayTicket extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static String dbHost = "sql8.freemysqlhosting.net";
+	private static String dbPort = "3306";
+	private static String dbNameCon = "sql8160217";
+	private static String dbUsername = "sql8160217";
+	private static String dbPassword = "XRN5N6f6BG";
+	
 	private JPanel contentPane;
 	private static JButton btnBack = new JButton("Back");
 	private static JButton btnSavePdf = new JButton("Save PDF");
@@ -127,7 +134,7 @@ public class displayTicket extends JFrame {
 				
 				
 				try {
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+					Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 					Statement stmt = conn.createStatement();
 					
 					String strSelect = "select * from ticket where ticket_id="+ticketID;
@@ -145,7 +152,7 @@ public class displayTicket extends JFrame {
 			        }  
 		        	
 		        	try {
-						Connection conn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+						Connection conn2 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 						Statement stmt2 = conn2.createStatement();
 						
 						String strSelect2 = "select name, surname from users where id="+ticketDbUserID;
@@ -158,7 +165,7 @@ public class displayTicket extends JFrame {
 				        }  
 			        	
 			        	try {
-							Connection conn3 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+							Connection conn3 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 							Statement stmt3 = conn3.createStatement();
 							
 							String strSelect3 = "select depart_from, going_to from bus_table where bus_id="+ticketDbBusID;
@@ -170,13 +177,25 @@ public class displayTicket extends JFrame {
 				        		busDbDestination = rset3.getString("going_to");
 					        }  
 				        	
+				        	rset3.close();
+					        stmt3.close();
+							conn3.close();
+				        	
 					      } catch(SQLException ex) {
 					    	  ex.printStackTrace();
 					      }
 
+			        	rset2.close();
+				        stmt2.close();
+						conn2.close();
+			        	
 				      } catch(SQLException ex) {
 				    	  ex.printStackTrace();
 				      }
+		        	
+		        	rset.close();
+			        stmt.close();
+					conn.close();
 		        
 			      } catch(SQLException ex) {
 			    	  ex.printStackTrace();
@@ -209,9 +228,9 @@ public class displayTicket extends JFrame {
 
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				finish();
 				mainWindow.refreshBuses();
 				mainWindow.refreshTimetable();
-				finish();
 			}
 		});
 		btnBack.setBounds(349, 262, 73, 23);

@@ -31,6 +31,11 @@ public class login extends JFrame {
 	private JTextField inputUsername;
 	private static JButton btnNewButton;
 	private JPasswordField passwordField;
+	private static String dbHost = "sql8.freemysqlhosting.net";
+	private static String dbPort = "3306";
+	private static String dbNameCon = "sql8160217";
+	private static String dbUsername = "sql8160217";
+	private static String dbPassword = "XRN5N6f6BG";
 
 	/**
 	 * Launch the application.
@@ -52,8 +57,11 @@ public class login extends JFrame {
 				    frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
-					try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); Statement stmt = conn.createStatement();){
+					try (Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); Statement stmt = conn.createStatement();){
 						btnNewButton.setEnabled(true);
+						
+						stmt.close();
+						conn.close();
 						
 				      } catch(SQLException ex) {
 				         ex.printStackTrace();
@@ -99,7 +107,7 @@ public class login extends JFrame {
 				
 				//System.out.println(guiUser+" "+guiPass);
 				
-				try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); Statement stmt = conn.createStatement();){
+				try (Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); Statement stmt = conn.createStatement();){
 
 					 String strSelect = "select id, name, username, password, is_admin from users";
 			 
@@ -141,6 +149,10 @@ public class login extends JFrame {
 			         if(!(guiUser.equalsIgnoreCase(dbUser) && guiPass.equalsIgnoreCase(dbPass))){
 			        	 JOptionPane.showMessageDialog(null, "Wrong details, try again..");
 			         }
+			         
+			        rset.close();
+			        stmt.close();
+					conn.close();
 					
 			      } catch(SQLException ex) {
 			         ex.printStackTrace();

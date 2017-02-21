@@ -31,6 +31,11 @@ public class addBus extends JFrame {
 	private static JComboBox comboBox = new JComboBox();
 	private static JComboBox comboBox_1 = new JComboBox();
 	private static JComboBox comboBox_2 = new JComboBox();
+	private static String dbHost = "sql8.freemysqlhosting.net";
+	private static String dbPort = "3306";
+	private static String dbNameCon = "sql8160217";
+	private static String dbUsername = "sql8160217";
+	private static String dbPassword = "XRN5N6f6BG";
 
 	/**
 	 * Launch the application.
@@ -135,7 +140,7 @@ public class addBus extends JFrame {
 				}
 				
 				try {
-					Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+					Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 					Statement stmt = conn.createStatement();
 					
 					String strSelect = "insert into bus_table (bus_number,depart_from,going_to,bus_time) values ('"+bus_number+"', '"+depart_from+"', '"+going_to+"', '"+bus_time+"')";
@@ -146,6 +151,9 @@ public class addBus extends JFrame {
 			        mainWindow.refreshTimetable();
 			        mainWindow.populate();
 			        finish();
+			        
+			        stmt.close();
+					conn.close();
 
 			      } catch(SQLException ex) {
 			    	  ex.printStackTrace();

@@ -88,6 +88,12 @@ public class mainWindow extends JFrame {
 	private static JLabel lblAdult = new JLabel("Adult:");
 	private static JLabel lblStudent = new JLabel("Student:");
 	private JTextField textField;
+	
+	private static String dbHost = "sql8.freemysqlhosting.net";
+	private static String dbPort = "3306";
+	private static String dbNameCon = "sql8160217";
+	private static String dbUsername = "sql8160217";
+	private static String dbPassword = "XRN5N6f6BG";
 		
 	/**
 	 * Launch the application.
@@ -148,14 +154,70 @@ public class mainWindow extends JFrame {
 		populate();
 		
 		tabbedPane.addTab("Reservation", panel);
+		tabbedPane.addTab("Tickets", panel_3);
+		panel_3.setLayout(null);
+		
+		panel_3.setBackground(Color.DARK_GRAY);
+		
+		textField = new JTextField();
+		textField.setForeground(Color.DARK_GRAY);
+		textField.setBackground(Color.WHITE);
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setFont(new Font("Arial", Font.PLAIN, 25));
+		textField.setBounds(115, 116, 226, 35);
+		panel_3.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton_2 = new JButton("Search");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				int ticketID;
+				
+				ticketID = Integer.parseInt(textField.getText());
+				
+				try {
+					Connection conn3 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
+					Statement stmt3 = conn3.createStatement();
+					
+					String strSelect3 = "select * from ticket where ticket_id="+ticketID;
+			 
+			        ResultSet rset3 = stmt3.executeQuery(strSelect3);
+			 
+		        	if(rset3.next()){
+		        		displayTicket frame = new displayTicket(ticketID);
+		        		frame.setVisible(true);
+		        		frame.setLocationRelativeTo(null);
+		        	}
+		        	else{
+		        		JOptionPane.showMessageDialog(null, "Sorry, ticket with ID "+ticketID+" doesn't exist.");
+		        	}
+		        	
+		        	rset3.close();
+			        stmt3.close();
+					conn3.close();
+					
+			      } catch(SQLException ex) {
+			    	  ex.printStackTrace();
+			      }
+				
+			}
+		});
+		btnNewButton_2.setBounds(351, 122, 89, 23);
+		panel_3.add(btnNewButton_2);
+		
+		JLabel lblTicketId = new JLabel("Ticket ID");
+		lblTicketId.setForeground(Color.LIGHT_GRAY);
+		lblTicketId.setFont(new Font("Arial", Font.ITALIC, 24));
+		lblTicketId.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTicketId.setBounds(115, 85, 226, 30);
+		panel_3.add(lblTicketId);
 		tabbedPane.addTab("Administration", panel_1);
 		tabbedPane.addTab("Bus timetable", panel_2);
-		tabbedPane.addTab("Tickets", panel_3);
 		
 		panel.setLayout(null);
 		panel_1.setLayout(null);
 		panel_2.setLayout(null);
-		panel_3.setLayout(null);
 		
 		panel.setBackground(Color.DARK_GRAY);
 		panel_1.setBackground(Color.DARK_GRAY);
@@ -191,7 +253,7 @@ public class mainWindow extends JFrame {
 					if(dialogResult == JOptionPane.YES_OPTION){
 
 						try {
-							Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+							Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 							Statement stmt = conn.createStatement();
 							
 							String strSelect = "delete from bus_table where bus_id like " + table.getValueAt(table.getSelectedRow(), 0);
@@ -200,7 +262,10 @@ public class mainWindow extends JFrame {
 					        
 					        refreshBuses();
 					        refreshTimetable();
-
+					        
+					        stmt.close();
+							conn.close();
+							
 					      } catch(SQLException ex) {
 					    	  ex.printStackTrace();
 					      } // end of try/catch
@@ -269,51 +334,6 @@ public class mainWindow extends JFrame {
 		panel_2.add(btnNewButton_1);
 		refreshTimetable();
 		
-		panel_3.setBackground(Color.DARK_GRAY);
-		
-		textField = new JTextField();
-		textField.setForeground(Color.DARK_GRAY);
-		textField.setBackground(Color.WHITE);
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setFont(new Font("Arial", Font.PLAIN, 25));
-		textField.setBounds(115, 116, 226, 35);
-		panel_3.add(textField);
-		textField.setColumns(10);
-		
-		JButton btnNewButton_2 = new JButton("Search");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				int ticketID;
-				
-				ticketID = Integer.parseInt(textField.getText());
-				
-				try {
-					Connection conn3 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
-					Statement stmt3 = conn3.createStatement();
-					
-					String strSelect3 = "select * from ticket where ticket_id="+ticketID;
-			 
-			        ResultSet rset3 = stmt3.executeQuery(strSelect3);
-			 
-		        	if(rset3.next()){
-		        		displayTicket frame = new displayTicket(ticketID);
-		        		frame.setVisible(true);
-		        		frame.setLocationRelativeTo(null);
-		        	}
-		        	else{
-		        		JOptionPane.showMessageDialog(null, "Sorry, ticket with ID "+ticketID+" doesn't exist.");
-		        	}
-		        	
-			      } catch(SQLException ex) {
-			    	  ex.printStackTrace();
-			      }
-				
-			}
-		});
-		btnNewButton_2.setBounds(351, 122, 89, 23);
-		panel_3.add(btnNewButton_2);
-		
 		//if current user does not have administrator privileges disable the admin panel tab 
 		if(!if_admin){
 			//tabbedPane.setEnabledAt(2, false);
@@ -381,7 +401,7 @@ public class mainWindow extends JFrame {
 					
 					
 					try {
-						Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+						Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 						Statement stmt = conn.createStatement();
 						
 						String strSelect = "select * from bus_table where depart_from LIKE '" + comboBox.getSelectedItem() + "' and going_to LIKE '" + comboBox_1.getSelectedItem() + "'";
@@ -404,6 +424,9 @@ public class mainWindow extends JFrame {
 				        	comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
 				        }  
 			        	
+			        	rset.close();
+				        stmt.close();
+						conn.close();
 
 				      } catch(SQLException ex) {
 				    	  ex.printStackTrace();
@@ -507,7 +530,7 @@ public class mainWindow extends JFrame {
 					String bus_time = null;
 					
 					try {
-						Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+						Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 						Statement stmt = conn.createStatement();
 						
 						String strSelect = "select * from bus_table where bus_id="+selected[0];
@@ -547,7 +570,7 @@ public class mainWindow extends JFrame {
 
 			        	//System.out.println(dbBusID+"\n"+dbBusNumber+"\n"+dbJourneyDate+"\n"+dbAdult+"\n"+dbStudent+"\n"+dbUserID+"\n"+dbPrice);
 			        	try {
-							Connection conn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+							Connection conn2 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 							Statement stmt2 = conn2.createStatement();
 							
 							String strSelect2 = "insert into ticket (bus_id, bus_number, journey_date, adult_quantity, student_quantity, user_id, totalPrice, ticket_id) "
@@ -566,11 +589,18 @@ public class mainWindow extends JFrame {
 					        frame.setVisible(true);
 					        frame.setLocationRelativeTo(null);
 
+					        stmt2.close();
+							conn2.close();
+					        
 					      } catch(SQLException ex) {
 					    	  ex.printStackTrace();
 					      } // end of try/catch
 			        	
 
+			        	rset.close();
+				        stmt.close();
+						conn.close();
+			        	
 				      } catch(SQLException ex) {
 				    	  ex.printStackTrace();
 				      }
@@ -665,7 +695,7 @@ public class mainWindow extends JFrame {
 	/////////////////////////////////////////////
 	public static void refreshBuses(){
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 			Statement stmt = conn.createStatement();
 			
 			String strSelect = "select * from bus_table";
@@ -681,6 +711,10 @@ public class mainWindow extends JFrame {
 			table.setBounds(10, 11, 192, 63);
 			table.setGridColor(Color.LIGHT_GRAY);
 
+			rset.close();
+	        stmt.close();
+			conn.close();
+			
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
 	      }
@@ -688,7 +722,7 @@ public class mainWindow extends JFrame {
 	
 	public static void refreshTimetable(){
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 			Statement stmt = conn.createStatement();
 			
 			String strSelect = "select * from bus_table";
@@ -704,6 +738,10 @@ public class mainWindow extends JFrame {
 			table_1.setBounds(10, 11, 192, 63);
 			table_1.setGridColor(Color.LIGHT_GRAY);
 
+			rset.close();
+	        stmt.close();
+			conn.close();
+			
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
 	      }
@@ -716,7 +754,7 @@ public class mainWindow extends JFrame {
 	
 	public static void populate(){
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project?useSSL=false", "root", ""); 
+			Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 			Statement stmt = conn.createStatement();
 			
 			String strSelect = "select depart_from, going_to from bus_table";
@@ -737,6 +775,11 @@ public class mainWindow extends JFrame {
 	        
 	        comboBox.setModel(new DefaultComboBoxModel(sourceStations.toArray()));
 			comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
+			
+			rset.close();
+	        stmt.close();
+			conn.close();
+			
 	      } catch(SQLException ex) {
 	    	  ex.printStackTrace();
 	      }
