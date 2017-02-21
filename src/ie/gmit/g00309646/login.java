@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Color;
@@ -23,9 +22,6 @@ import java.awt.Font;
 
 public class login extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField inputUsername;

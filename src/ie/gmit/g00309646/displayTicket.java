@@ -26,20 +26,10 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-import com.itextpdf.text.Anchor;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.List;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Section;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class displayTicket extends JFrame {
@@ -88,10 +78,9 @@ public class displayTicket extends JFrame {
 	private static String busDbDestination = "";
 	
 	//iText API for PDF file
-	private static String FILE = "./FirstPdf.pdf";
+	private static String FILE = "./sample.pdf";
 	private static com.itextpdf.text.Font catFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 	private static com.itextpdf.text.Font redFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, Font.PLAIN, BaseColor.RED);
-	private static com.itextpdf.text.Font subFont = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
 	private static com.itextpdf.text.Font smallBold = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
 
@@ -228,9 +217,9 @@ public class displayTicket extends JFrame {
 
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				finish();
 				mainWindow.refreshBuses();
 				mainWindow.refreshTimetable();
+				finish();
 			}
 		});
 		btnBack.setBounds(349, 262, 73, 23);
@@ -407,7 +396,7 @@ public class displayTicket extends JFrame {
             preface.add(new Paragraph("Bought by - "+usersDbName+" "+usersDbSurname, smallBold));
 
             addEmptyLine(preface, 8);
-            preface.add(new Paragraph("Thank you for buying ticket with IrishBusApp", redFont));
+            preface.add(new Paragraph("Thank you for buying the ticket with IrishBusApp", redFont));
 
             document.add(preface);
             // Start a new page

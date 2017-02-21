@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,8 +21,10 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class addBus extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField busIDField;
 	private JTextField sourceField;

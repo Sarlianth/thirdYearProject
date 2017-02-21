@@ -44,11 +44,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class mainWindow extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private static ArrayList<String> sourceStations = new ArrayList<String>();
@@ -154,64 +152,6 @@ public class mainWindow extends JFrame {
 		populate();
 		
 		tabbedPane.addTab("Reservation", panel);
-		tabbedPane.addTab("Tickets", panel_3);
-		panel_3.setLayout(null);
-		
-		panel_3.setBackground(Color.DARK_GRAY);
-		
-		textField = new JTextField();
-		textField.setForeground(Color.DARK_GRAY);
-		textField.setBackground(Color.WHITE);
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setFont(new Font("Arial", Font.PLAIN, 25));
-		textField.setBounds(115, 116, 226, 35);
-		panel_3.add(textField);
-		textField.setColumns(10);
-		
-		JButton btnNewButton_2 = new JButton("Search");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				int ticketID;
-				
-				ticketID = Integer.parseInt(textField.getText());
-				
-				try {
-					Connection conn3 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
-					Statement stmt3 = conn3.createStatement();
-					
-					String strSelect3 = "select * from ticket where ticket_id="+ticketID;
-			 
-			        ResultSet rset3 = stmt3.executeQuery(strSelect3);
-			 
-		        	if(rset3.next()){
-		        		displayTicket frame = new displayTicket(ticketID);
-		        		frame.setVisible(true);
-		        		frame.setLocationRelativeTo(null);
-		        	}
-		        	else{
-		        		JOptionPane.showMessageDialog(null, "Sorry, ticket with ID "+ticketID+" doesn't exist.");
-		        	}
-		        	
-		        	rset3.close();
-			        stmt3.close();
-					conn3.close();
-					
-			      } catch(SQLException ex) {
-			    	  ex.printStackTrace();
-			      }
-				
-			}
-		});
-		btnNewButton_2.setBounds(351, 122, 89, 23);
-		panel_3.add(btnNewButton_2);
-		
-		JLabel lblTicketId = new JLabel("Ticket ID");
-		lblTicketId.setForeground(Color.LIGHT_GRAY);
-		lblTicketId.setFont(new Font("Arial", Font.ITALIC, 24));
-		lblTicketId.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTicketId.setBounds(115, 85, 226, 30);
-		panel_3.add(lblTicketId);
 		tabbedPane.addTab("Administration", panel_1);
 		tabbedPane.addTab("Bus timetable", panel_2);
 		
@@ -525,9 +465,9 @@ public class mainWindow extends JFrame {
 					
 					int bus_id = 0;
 					String bus_number = null;
-					String depart_from = null;
+					/*String depart_from = null;
 					String going_to = null;
-					String bus_time = null;
+					String bus_time = null;*/
 					
 					try {
 						Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
@@ -540,9 +480,9 @@ public class mainWindow extends JFrame {
 			        	while(rset.next()) {
 			        		bus_id = rset.getInt("bus_id");
 			        		bus_number = rset.getString("bus_number");
-			        		depart_from = rset.getString("depart_from");
+			        		/*depart_from = rset.getString("depart_from");
 			        		going_to = rset.getString("going_to");
-			        		bus_time = rset.getString("bus_time");
+			        		bus_time = rset.getString("bus_time");*/
 				        }  
 			        	
 			        	/////////////////////////////////
@@ -650,6 +590,64 @@ public class mainWindow extends JFrame {
 		panel_4.add(totalPriceLbl);
 		button.setBounds(445, 26, 89, 120);
 		panel.add(button);
+		tabbedPane.addTab("Tickets", panel_3);
+		panel_3.setLayout(null);
+		
+		panel_3.setBackground(Color.DARK_GRAY);
+		
+		textField = new JTextField();
+		textField.setForeground(Color.DARK_GRAY);
+		textField.setBackground(Color.WHITE);
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setFont(new Font("Arial", Font.PLAIN, 25));
+		textField.setBounds(115, 116, 226, 35);
+		panel_3.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton_2 = new JButton("Search");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				int ticketID;
+				
+				ticketID = Integer.parseInt(textField.getText());
+				
+				try {
+					Connection conn3 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
+					Statement stmt3 = conn3.createStatement();
+					
+					String strSelect3 = "select * from ticket where ticket_id="+ticketID;
+			 
+			        ResultSet rset3 = stmt3.executeQuery(strSelect3);
+			 
+		        	if(rset3.next()){
+		        		displayTicket frame = new displayTicket(ticketID);
+		        		frame.setVisible(true);
+		        		frame.setLocationRelativeTo(null);
+		        	}
+		        	else{
+		        		JOptionPane.showMessageDialog(null, "Sorry, ticket with ID "+ticketID+" doesn't exist.");
+		        	}
+		        	
+		        	rset3.close();
+			        stmt3.close();
+					conn3.close();
+					
+			      } catch(SQLException ex) {
+			    	  ex.printStackTrace();
+			      }
+				
+			}
+		});
+		btnNewButton_2.setBounds(351, 122, 89, 23);
+		panel_3.add(btnNewButton_2);
+		
+		JLabel lblTicketId = new JLabel("Ticket ID");
+		lblTicketId.setForeground(Color.LIGHT_GRAY);
+		lblTicketId.setFont(new Font("Arial", Font.ITALIC, 24));
+		lblTicketId.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTicketId.setBounds(115, 85, 226, 30);
+		panel_3.add(lblTicketId);
 		
 		//////////////////////////////////////////////
 		///////LOGOUT BUTTON ACTION LISTENER/////////

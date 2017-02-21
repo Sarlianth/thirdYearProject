@@ -1,11 +1,8 @@
 package ie.gmit.g00309646;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,17 +15,17 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Window.Type;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class updateBus extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField busIDField;
 	private JTextField sourceField;
@@ -36,9 +33,6 @@ public class updateBus extends JFrame {
 	private static JComboBox comboBox = new JComboBox();
 	private static JComboBox comboBox_1 = new JComboBox();
 	private static JComboBox comboBox_2 = new JComboBox();
-	private String tempName;
-	private String tempFrom;
-	private String tempTo;
 	private String tempTime;
 	
 	private static String dbHost = "sql8.freemysqlhosting.net";
@@ -207,7 +201,7 @@ public class updateBus extends JFrame {
 	 
         	while(rset.next()) {
 	        	
-	        	int tempID = rset.getInt("bus_id");
+	        	//int tempID = rset.getInt("bus_id");
 	        	busIDField.setText(rset.getString("bus_number"));
 	    		sourceField.setText(rset.getString("depart_from"));
 	    		destinationField.setText(rset.getString("going_to"));
