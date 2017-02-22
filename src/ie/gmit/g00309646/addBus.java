@@ -85,7 +85,7 @@ public class addBus extends JFrame {
 		setTitle("Add new bus");
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 350, 240);
+		setBounds(100, 100, 360, 260);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -100,7 +100,7 @@ public class addBus extends JFrame {
 				finish();
 			}
 		});
-		btnBack.setBounds(188, 134, 80, 23);
+		btnBack.setBounds(211, 134, 80, 23);
 		contentPane.add(btnBack);
 		
 		JLabel lblBusIdname = new JLabel("Bus ID/Name");
@@ -161,7 +161,7 @@ public class addBus extends JFrame {
 			      } // end of try/catch
 			} //actionPerformed
 		});
-		btnAdd.setBounds(10, 134, 80, 23);
+		btnAdd.setBounds(31, 134, 80, 23);
 		contentPane.add(btnAdd);
 		
 		JButton btnClear = new JButton("Clear");
@@ -177,36 +177,36 @@ public class addBus extends JFrame {
 				
 			}
 		});
-		btnClear.setBounds(98, 135, 80, 23);
+		btnClear.setBounds(121, 134, 80, 23);
 		contentPane.add(btnClear);
 		
 		sourceField = new JTextField();
 		sourceField.setColumns(10);
-		sourceField.setBounds(106, 42, 162, 23);
+		sourceField.setBounds(106, 42, 185, 23);
 		contentPane.add(sourceField);
 		
 		destinationField = new JTextField();
 		destinationField.setColumns(10);
-		destinationField.setBounds(106, 73, 162, 23);
+		destinationField.setBounds(106, 73, 185, 23);
 		contentPane.add(destinationField);
 		
 		busIDField = new JTextField("");
-		busIDField.setBounds(106, 11, 162, 23);
+		busIDField.setBounds(106, 11, 185, 23);
 		contentPane.add(busIDField);
 		busIDField.setColumns(10);
 		
 		comboBox.setModel(new DefaultComboBoxModel(hours.toArray()));
-		comboBox.setBounds(106, 104, 50, 20);
+		comboBox.setBounds(106, 104, 58, 20);
 		contentPane.add(comboBox);
 		comboBox.setSelectedItem(12);
 		
 		comboBox_1.setModel(new DefaultComboBoxModel(mins.toArray()));
-		comboBox_1.setBounds(162, 104, 50, 20);
+		comboBox_1.setBounds(170, 104, 58, 20);
 		contentPane.add(comboBox_1);
 		comboBox_1.setSelectedItem(30);
 		
 		comboBox_2 = new JComboBox(choice);
-		comboBox_2.setBounds(218, 104, 52, 20);
+		comboBox_2.setBounds(233, 104, 58, 20);
 		contentPane.add(comboBox_2);
 		comboBox_2.setSelectedItem("AM");
 	}

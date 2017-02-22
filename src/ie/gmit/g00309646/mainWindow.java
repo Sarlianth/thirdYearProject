@@ -53,7 +53,7 @@ public class mainWindow extends JFrame {
 	private static ArrayList<String> destinationStations = new ArrayList<String>();
 	private static JComboBox comboBox = new JComboBox();
 	private static JComboBox comboBox_1 = new JComboBox();
-	private static JLabel lblAvailableBus = new JLabel("Available buses: ");
+	private static JLabel lblAvailableBus = new JLabel("Available buses:  ");
 	private static ArrayList<String> availableBuses = new ArrayList<String>();
 	private static JComboBox comboBox_2 = new JComboBox();
 	private static JTabbedPane tabbedPane;
@@ -64,7 +64,7 @@ public class mainWindow extends JFrame {
 	private JButton btnSearch = new JButton("Search");
 	private JButton button = new JButton("Logout");
 	private JButton btnSelect = new JButton("Choose bus");
-	private JLabel lblNewLabel = new JLabel("Source station:");
+	private JLabel lblNewLabel = new JLabel("Source station:  ");
 	private	JLabel lblDestination = new JLabel("Destination:");
 	private final static JScrollPane scrollPane = new JScrollPane();
 	private final static JScrollPane scrollPane_1 = new JScrollPane();
@@ -142,6 +142,20 @@ public class mainWindow extends JFrame {
 		///////SETUP TABBED PANE AND PANELS//////////
 		/////////////////////////////////////////////
 		UIManager.put("TabbedPane.selected", Color.getHSBColor(300,150,200));
+		button.setBounds(470, 11, 89, 19);
+		contentPane.add(button);
+		
+		//////////////////////////////////////////////
+		///////LOGOUT BUTTON ACTION LISTENER/////////
+		/////////////////////////////////////////////
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				finish();
+				login frame = new login();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setForeground(Color.DARK_GRAY);
 		tabbedPane.setBackground(Color.DARK_GRAY);
@@ -284,25 +298,25 @@ public class mainWindow extends JFrame {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(7, 26, 105, 19);
+		lblNewLabel.setBounds(10, 27, 105, 19);
 		panel.add(lblNewLabel);
 		lblDestination.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblDestination.setHorizontalAlignment(SwingConstants.RIGHT);
 	
 		lblDestination.setForeground(Color.WHITE);
-		lblDestination.setBounds(238, 28, 71, 14);
+		lblDestination.setBounds(274, 28, 100, 17);
 		panel.add(lblDestination);
 		
-		comboBox.setBounds(114, 25, 118, 20);
+		comboBox.setBounds(114, 25, 150, 20);
 		panel.add(comboBox);
 		comboBox.setModel(new DefaultComboBoxModel(sourceStations.toArray()));
 		
-		comboBox_1.setBounds(313, 25, 118, 20);
+		comboBox_1.setBounds(384, 26, 150, 20);
 		panel.add(comboBox_1);
 		comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
 		btnSearch.setBackground(Color.WHITE);
 		
-		btnSearch.setBounds(114, 61, 317, 23);
+		btnSearch.setBounds(114, 61, 420, 23);
 		panel.add(btnSearch);
 		lblAvailableBus.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblAvailableBus.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -311,7 +325,7 @@ public class mainWindow extends JFrame {
 		lblAvailableBus.setBounds(10, 96, 105, 19);
 		panel.add(lblAvailableBus);
 		
-		comboBox_2.setBounds(114, 95, 317, 20);
+		comboBox_2.setBounds(114, 95, 420, 20);
 		panel.add(comboBox_2);
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -319,7 +333,7 @@ public class mainWindow extends JFrame {
 			}
 		});
 
-		btnSelect.setBounds(114, 123, 317, 23);
+		btnSelect.setBounds(114, 123, 420, 23);
 		panel.add(btnSelect);
 		btnSelect.setEnabled(false);
 		
@@ -393,16 +407,16 @@ public class mainWindow extends JFrame {
 		panel.add(panel_4);
 		panel_4.setLayout(null);
 		
-		comboBox_student.setBounds(222, 47, 45, 20);
+		comboBox_student.setBounds(222, 47, 57, 20);
 		panel_4.add(comboBox_student);
 		lblStudent.setFont(new Font("Arial", Font.PLAIN, 13));
 		
-		lblStudent.setBounds(163, 49, 54, 14);
+		lblStudent.setBounds(158, 49, 54, 14);
 		panel_4.add(lblStudent);
 		lblStudent.setForeground(Color.WHITE);
 	
 		
-		comboBox_adult.setBounds(97, 47, 45, 20);
+		comboBox_adult.setBounds(85, 47, 57, 20);
 		panel_4.add(comboBox_adult);
 		comboBox_adult.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
@@ -433,13 +447,14 @@ public class mainWindow extends JFrame {
 		        calculateTotal();
 		    }
 		});
+		lblAdult.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAdult.setFont(new Font("Arial", Font.PLAIN, 13));
 		
-		lblAdult.setBounds(54, 49, 45, 14);
+		lblAdult.setBounds(10, 49, 65, 14);
 		panel_4.add(lblAdult);
 		lblAdult.setForeground(Color.WHITE);
 		lblSelectDate.setFont(new Font("Arial", Font.PLAIN, 13));
-		lblSelectDate.setBounds(10, 15, 91, 14);
+		lblSelectDate.setBounds(10, 15, 97, 14);
 		panel_4.add(lblSelectDate);
 		lblSelectDate.setForeground(Color.WHITE);
 		datePicker = new JDatePickerImpl(datePanel);
@@ -564,12 +579,14 @@ public class mainWindow extends JFrame {
 		btnClear.setBounds(409, 44, 105, 23);
 		
 		panel_4.add(btnClear);
+		lblStudent_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblStudent_1.setForeground(Color.WHITE);
-		lblStudent_1.setBounds(294, 15, 59, 14);
+		lblStudent_1.setBounds(289, 15, 56, 14);
 		
 		panel_4.add(lblStudent_1);
+		lblAdult_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAdult_1.setForeground(Color.WHITE);
-		lblAdult_1.setBounds(309, 31, 44, 14);
+		lblAdult_1.setBounds(289, 31, 56, 14);
 		
 		panel_4.add(lblAdult_1);
 		studentPrice.setForeground(Color.WHITE);
@@ -580,16 +597,15 @@ public class mainWindow extends JFrame {
 		adultPrice.setBounds(353, 31, 46, 14);
 		
 		panel_4.add(adultPrice);
+		lblTotal.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblTotal.setForeground(Color.WHITE);
-		lblTotal.setBounds(310, 48, 44, 14);
+		lblTotal.setBounds(289, 48, 56, 14);
 		
 		panel_4.add(lblTotal);
 		totalPriceLbl.setForeground(Color.WHITE);
 		totalPriceLbl.setBounds(353, 48, 46, 14);
 		
 		panel_4.add(totalPriceLbl);
-		button.setBounds(445, 26, 89, 120);
-		panel.add(button);
 		tabbedPane.addTab("Tickets", panel_3);
 		panel_3.setLayout(null);
 		
@@ -648,18 +664,6 @@ public class mainWindow extends JFrame {
 		lblTicketId.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTicketId.setBounds(115, 85, 226, 30);
 		panel_3.add(lblTicketId);
-		
-		//////////////////////////////////////////////
-		///////LOGOUT BUTTON ACTION LISTENER/////////
-		/////////////////////////////////////////////
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				finish();
-				login frame = new login();
-				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
-			}
-		});
 		
 		disablePanel();
     }

@@ -206,7 +206,7 @@ public class displayTicket extends JFrame {
 		setTitle("Ticket - "+ticketID);
 		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 486, 372);
+		setBounds(100, 100, 500, 390);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -356,7 +356,7 @@ public class displayTicket extends JFrame {
 			}
 		});
 		btnSavePdf.setFont(new Font("Arial", Font.PLAIN, 14));
-		btnSavePdf.setBounds(230, 262, 109, 23);
+		btnSavePdf.setBounds(222, 262, 117, 23);
 		contentPane.add(btnSavePdf);
 	}
 	
