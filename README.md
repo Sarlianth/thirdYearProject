@@ -5,13 +5,13 @@
 <p> I am using online server to host the database of the IrishBusApp Project. You can also use local server to host the database of this project. I use MySQL database for this project. But It can be easily converted into Oracle or any other database.</p>
 <p>Through this Online Reservation System, a practical approach has been taken under study to understand how online reservation system works. This system will include all the necessary fields which are required during online reservation. It will be easy to use and can be used by any person. The basic idea behind this project is to save data in a central database which can be accessed by any authorized person to get information and saves time and burden which are being faced by customers.</p>
 <p>As I have been developing this application, I used to work with localhost database. However, after I have developed the database completely, I decided to proceed with some sort of online MySQL hosting. There was many options, but I have decided to go with the following: https://www.freemysqlhosting.net/</p>
-```
+<pre>
 FreeMySQLHosting includes;
 •	MySQL Database
 •	5MB MySQL Hosting Space
 •	phpMyAdmin
 •	Secure, Reliable, Fast hosting
-```
+</pre>
   
 # System Requirements
 ## Software Requirements
