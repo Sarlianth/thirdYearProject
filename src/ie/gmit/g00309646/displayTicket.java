@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.FileNotFoundException;
-//imports iText API to create PDF file from provided information
+
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+//imports iText API to create PDF file from provided information
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
