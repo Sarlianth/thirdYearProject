@@ -7,7 +7,7 @@ I am using online server to host the database of the IrishBusApp Project. You ca
 
 Through this **Online Reservation System**, a practical approach has been taken under study to understand how online reservation system works. This system will include all the necessary fields which are required during online reservation. It will be easy to use and can be used by any person. The basic idea behind this project is to save data in a central database which can be accessed by any authorized person to get information and saves time and burden which are being faced by customers.
 
-As I have been developing this application, I used to work with localhost database. However, after I have developed the database completely, I decided to proceed with some sort of online MySQL hosting. There was many options, but I have decided to go with the following: [FreeMySQLHosting](**https://www.freemysqlhosting.net/**)
+As I have been developing this application, I used to work with localhost database. However, after I have developed the database completely, I decided to proceed with some sort of online MySQL hosting. There was many options, but I have decided to go with the following: [**FreeMySQLHosting**](https://www.freemysqlhosting.net/)
 <pre>
 FreeMySQLHosting includes;
 •	MySQL Database
@@ -32,7 +32,7 @@ FreeMySQLHosting includes;
 To be able to run the application on your system you will need to do follow these steps:
 
 1.	Make sure to have **Java** installed on your machine. If you do not have it installed, please use the following link to download and install: [Click here to download Java](https://java.com/en/download/)
-2.	Download the client from [**dist**](https://github.com/Sarlianth/thirdYearProject/tree/master/dist) folder, or just use the following link: [Click here to download client](https://github.com/Sarlianth/thirdYearProject/blob/master/dist/IrishBusApp.jar)
+2.	Download the client from [**`dist`**](https://github.com/Sarlianth/thirdYearProject/tree/master/dist) folder, or just use the following link: [Click here to download client](https://github.com/Sarlianth/thirdYearProject/blob/master/dist/IrishBusApp.jar)
 3.	After installing Java and downloading the client, all you need to do is just to **run the Jar file** that you have downloaded from the dist folder.
 
 I am using online MySQL database, therefore you do not need to worry about installing it on your local machine. However, if you would like to **use your own localhost database**, please follow these steps before attempting the steps above:
