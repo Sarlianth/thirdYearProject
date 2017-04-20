@@ -1,10 +1,10 @@
 # Online Bus Reservation System - IrishBusApp
 
 # Introduction
-<p> Online Bus Reservation System (IrishBusApp) is the project whose objective is to make the bus reservation online so that end user can book ticket from their own place. I have made this project in Java GUI, also using MySQL database.</p>
-<p> I am using online server to host the database of the IrishBusApp Project. You can also use local server to host the database of this project. I use MySQL database for this project. But It can be easily converted into Oracle or any other database.</p>
-<p>Through this Online Reservation System, a practical approach has been taken under study to understand how online reservation system works. This system will include all the necessary fields which are required during online reservation. It will be easy to use and can be used by any person. The basic idea behind this project is to save data in a central database which can be accessed by any authorized person to get information and saves time and burden which are being faced by customers.</p>
-<p>As I have been developing this application, I used to work with localhost database. However, after I have developed the database completely, I decided to proceed with some sort of online MySQL hosting. There was many options, but I have decided to go with the following: https://www.freemysqlhosting.net/</p>
+<p> **Online Bus Reservation System** (IrishBusApp) is the project whose objective is to make the bus reservation online so that end user can book ticket from their own place. I have made this project in **Java GUI**, also using **MySQL database**.</p>
+<p> I am using online server to host the database of the IrishBusApp Project. You can also use local server to host the database of this project. I decided to proceed with MySQL database for this project, however, it can be easily converted into Oracle or any other database.</p>
+<p>Through this **Online Reservation System**, a practical approach has been taken under study to understand how online reservation system works. This system will include all the necessary fields which are required during online reservation. It will be easy to use and can be used by any person. The basic idea behind this project is to save data in a central database which can be accessed by any authorized person to get information and saves time and burden which are being faced by customers.</p>
+<p>As I have been developing this application, I used to work with localhost database. However, after I have developed the database completely, I decided to proceed with some sort of online MySQL hosting. There was many options, but I have decided to go with the following: **https://www.freemysqlhosting.net/**</p>
 <pre>
 FreeMySQLHosting includes;
 •	MySQL Database
@@ -28,19 +28,19 @@ FreeMySQLHosting includes;
 # Setup & Installation
 <p>To be able to run the application on your system you will need to do follow these steps:
 
-1.	Make sure to have Java installed on your machine. If you do not have it installed, please use the following link to download and install: https://java.com/en/download/
-2.	Download the client from `dist` folder, or just use the following link: https://github.com/Sarlianth/thirdYearProject/blob/master/dist/IrishBusApp.jar
-3.	After installing Java and downloading the client, all you need to do is just to run the Jar file that you have downloaded from the dist folder.
+1.	Make sure to have **Java** installed on your machine. If you do not have it installed, please use the following link to download and install: [Click here to download Java](https://java.com/en/download/)
+2.	Download the client from [**dist**](https://github.com/Sarlianth/thirdYearProject/tree/master/dist) folder, or just use the following link: [Click here to download client](https://github.com/Sarlianth/thirdYearProject/blob/master/dist/IrishBusApp.jar)
+3.	After installing Java and downloading the client, all you need to do is just to **run the Jar file** that you have downloaded from the dist folder.
 
-<p>I am using online MySQL database, therefore you do not need to worry about installing it on your local machine. However, if you would like to use your own database from localhost, please follow these steps before attempting the steps above:
+<p>I am using online MySQL database, therefore you do not need to worry about installing it on your local machine. However, if you would like to **use your own localhost database**, please follow these steps before attempting the steps above:
 
-1.	Install `wamp`, use the following link: https://sourceforge.net/projects/wampserver/files/WampServer%203/WampServer%203.0.0/
-2.	Inside of the application, in every class I have created variables that are responsible for connection to database. These include the host, port, username, password etc. Please change those to your own.
-3.	If you have all the above steps done, run the Jar client.
+1.	Install **wamp**, use the following link: [Click here to download **wamp**](https://sourceforge.net/projects/wampserver/files/WampServer%203/WampServer%203.0.0/)
+2.	Inside of the application, in every class I have created variables that are responsible for connection to database. These include the *host, port, username, password* etc. Please change those to your own.
+3.	If you have all the above steps done, **run the Jar client**.
 
 
 # User Guide
-<p>In this section I will provide images with description of what each window in the application is used for. If potential user will have troubles using the application, this section should help understanding the project.
+<p>In this section I will provide *images* with description of what each window in the application is used for. If potential user will have troubles using the application, *this section should help understanding the project*.
 
 ![1](https://cloud.githubusercontent.com/assets/10263556/25205210/59641b06-2559-11e7-86f7-30c1371588be.jpg)
 
@@ -51,13 +51,13 @@ FreeMySQLHosting includes;
 
 <pre>
 1.	Username: admin	  /	Password: admin
-2.	Username: user		/	Password: pass 
+2.	Username: user	/	Password: pass 
 </pre>
 
 <p>If correct credentials will be entered, after pressing Login button, pop up message should be displayed welcoming user, and informing the user if admin privileges are available for them.
 
 ## Main window
-<p>The main window consists of 4 separate tabbed panels – “Reservation”, “Administration”, “Bus Timetable” and “Tickets”. I will describe each of the panel and its components separately. On the right hand side at the top, there’s a Logout button in order to logout and see the Login frame again.
+<p>The main window consists of 4 separate tabbed panels – **Reservation**, **Administration**, **Bus Timetable** and **Tickets**. I will describe each of the panel and its components separately. On the right hand side at the top, there’s a **Logout button** in order to logout and see the Login frame again.
 
 ## Reservation
 
