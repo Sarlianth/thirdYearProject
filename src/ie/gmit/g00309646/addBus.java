@@ -21,9 +21,11 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+// SuppressWarnings to get rid of warnings
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class addBus extends JFrame {
 
+	// Declaring all variables for this class
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField busIDField;
@@ -45,6 +47,7 @@ public class addBus extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
+				// BeautyEye API to make the application look better
 				try {
 					org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
 					UIManager.put("RootPane.setupButtonVisible", false);
@@ -53,10 +56,14 @@ public class addBus extends JFrame {
 					e1.printStackTrace();
 				}
 				
+				// Create the frame
 				try {
 					addBus frame = new addBus(false);
+					// Make the frame appear in the middle of the screen
 					frame.setLocationRelativeTo(null);
+					// Set the frame visible
 					frame.setVisible(true);
+					// Default close operation - DISPOSE
 					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -69,32 +76,48 @@ public class addBus extends JFrame {
 	 * Create the frame.
 	 */
 	public addBus(boolean if_admin) {	
+		// Create an array of integers for hours
 		ArrayList<Integer> hours = new ArrayList<Integer>();
 		for (int i = 1; i <= 12; i++){
 		   hours.add(i);
 		}
 		
+		// Create an array of integers for minutes
 		ArrayList<Integer> mins = new ArrayList<Integer>();
 		for (int i = 1; i <= 59; i++){
 		   mins.add(i);
 		}
 		
+		// Create an array of Strings to select either AM or PM when selecting time from dropdown boxes
 		String[] choice = {"AM", "PM"};
+		// Make the frame fixed size, not re-sizable
 		setResizable(false);
+		// Set the default font for this frame
 		setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		// Set the title of the frame
 		setTitle("Add new bus");
+		// Set frame foreground color
 		setForeground(Color.WHITE);
+		// Default close operation - DISPOSE
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// Frame bounds
 		setBounds(100, 100, 360, 260);
+		// New content pane
 		contentPane = new JPanel();
+		// Content pane background color
 		contentPane.setBackground(Color.DARK_GRAY);
+		// Content pane borders
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		// Apply the pane
 		setContentPane(contentPane);
+		// Layout to be null, so I can drag and drop troughout the whole frame
 		contentPane.setLayout(null);
 		
+		// Back button listener
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// When closing this frame refresh the buses and the timetable, so the information there is accurate and up-to-date
 				mainWindow.refreshBuses();
 				mainWindow.refreshTimetable();
 				finish();
@@ -103,56 +126,70 @@ public class addBus extends JFrame {
 		btnBack.setBounds(211, 134, 80, 23);
 		contentPane.add(btnBack);
 		
+		// New label with foreground color and bounds + add it to content pane
 		JLabel lblBusIdname = new JLabel("Bus ID/Name");
 		lblBusIdname.setForeground(Color.WHITE);
 		lblBusIdname.setBounds(10, 13, 86, 17);
 		contentPane.add(lblBusIdname);
 		
+		// New label with foreground color and bounds + add it to content pane
 		JLabel lblSourceStation = new JLabel("Source station");
 		lblSourceStation.setForeground(Color.WHITE);
 		lblSourceStation.setBounds(10, 44, 86, 17);
 		contentPane.add(lblSourceStation);
 		
+		// New label with foreground color and bounds + add it to content pane
 		JLabel lblDestination = new JLabel("Destination");
 		lblDestination.setForeground(Color.WHITE);
 		lblDestination.setBounds(10, 75, 86, 17);
 		contentPane.add(lblDestination);
 		
+		// New label with foreground color and bounds + add it to content pane
 		JLabel lblTime = new JLabel("Time (HH:MM)");
 		lblTime.setForeground(Color.WHITE);
 		lblTime.setBounds(10, 106, 86, 17);
 		contentPane.add(lblTime);
 		
+		// New button and listener for it
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// Variables to hold the information that will then be passed into the database
 				String bus_number = busIDField.getText();
 				String depart_from = sourceField.getText();
 				String going_to = destinationField.getText();
 				String bus_time = null;
+				// Just to format the time into one String, if hour is between 0-9 I am adding .0 to it
 				if(comboBox_1.getSelectedItem().equals(0) || comboBox_1.getSelectedItem().equals(1) || comboBox_1.getSelectedItem().equals(2) || comboBox_1.getSelectedItem().equals(3)
 						|| comboBox_1.getSelectedItem().equals(4) || comboBox_1.getSelectedItem().equals(5) || comboBox_1.getSelectedItem().equals(6)
 						|| comboBox_1.getSelectedItem().equals(7) || comboBox_1.getSelectedItem().equals(8) || comboBox_1.getSelectedItem().equals(9)) {
 					bus_time = comboBox.getSelectedItem() + ".0" + comboBox_1.getSelectedItem() + comboBox_2.getSelectedItem().toString();
 				}
+				// If time is above 9 I am only adding . in between hours and minutes
 				else{
 					bus_time = comboBox.getSelectedItem() + "." + comboBox_1.getSelectedItem() + comboBox_2.getSelectedItem().toString();
 				}
 				
+				// Inserting new bus into database
 				try {
+					// Setting up connection
 					Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 					Statement stmt = conn.createStatement();
 					
+					// Formatting the query 
 					String strSelect = "insert into bus_table (bus_number,depart_from,going_to,bus_time) values ('"+bus_number+"', '"+depart_from+"', '"+going_to+"', '"+bus_time+"')";
 			 
+					// Executing statement
 			        stmt.executeUpdate(strSelect);
 			        
+			        // Refreshing all tables containing information about buses, so data is accurate and up-to-date
 			        mainWindow.refreshBuses();
 			        mainWindow.refreshTimetable();
 			        mainWindow.populate();
 			        finish();
 			        
+			        // Closing connection with database
 			        stmt.close();
 					conn.close();
 
@@ -164,10 +201,12 @@ public class addBus extends JFrame {
 		btnAdd.setBounds(31, 134, 80, 23);
 		contentPane.add(btnAdd);
 		
+		// New button and listener
 		JButton btnClear = new JButton("Clear");
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// Clearing all the comboBoxes and text fields, if user decides to start again
 				comboBox.setSelectedItem(12);
 				comboBox_1.setSelectedItem(30);
 				comboBox_2.setSelectedItem("AM");
@@ -211,6 +250,7 @@ public class addBus extends JFrame {
 		comboBox_2.setSelectedItem("AM");
 	}
 	
+	// Public function to dispose this frame
 	public void finish(){
 		this.dispose();
 	}
