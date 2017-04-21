@@ -35,8 +35,10 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class displayTicket extends JFrame {
 
+	// Declaring class variables
 	private static final long serialVersionUID = 1L;
 	
+	// Variables for database connection
 	private static String dbHost = "sql8.freemysqlhosting.net";
 	private static String dbPort = "3306";
 	private static String dbNameCon = "sql8160217";
@@ -92,6 +94,7 @@ public class displayTicket extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
+				// BeautyEye API to make the application look better
 				try {
 					org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
 					UIManager.put("RootPane.setupButtonVisible", false);
@@ -100,10 +103,14 @@ public class displayTicket extends JFrame {
 					e1.printStackTrace();
 				}
 				
+				// Create the frame
 				try {
 					displayTicket frame = new displayTicket(0);
+					// Make the frame appear in the middle of the screen
 					frame.setLocationRelativeTo(null);
+					// Set the frame visible
 					frame.setVisible(true);
+					// Default close operation - DISPOSE
 					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -120,15 +127,18 @@ public class displayTicket extends JFrame {
 			@Override
 			public void componentShown(ComponentEvent arg0) {
 				
+				// When frame is created use the variable from passed parameter in constructor for the ticket id to be used in this frame
 				id = ticketID;
 				
-				
+				// Connect to database to query the ticket information
 				try {
 					Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 					Statement stmt = conn.createStatement();
 					
+					// String for the query
 					String strSelect = "select * from ticket where ticket_id="+ticketID;
 			 
+					// Execute the query
 			        ResultSet rset = stmt.executeQuery(strSelect);
 			 
 		        	while(rset.next()) {
@@ -141,12 +151,15 @@ public class displayTicket extends JFrame {
 						ticketDbTotalPrice = rset.getDouble("totalPrice");
 			        }  
 		        	
+		        	// Connect to database again to query all information about passenger from the ticket
 		        	try {
 						Connection conn2 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 						Statement stmt2 = conn2.createStatement();
 						
+						// String for the query
 						String strSelect2 = "select name, surname from users where id="+ticketDbUserID;
 				 
+						// Execute the query
 				        ResultSet rset2 = stmt2.executeQuery(strSelect2);
 				 
 			        	while(rset2.next()) {
@@ -154,6 +167,7 @@ public class displayTicket extends JFrame {
 			        		usersDbSurname = rset2.getString("surname");
 				        }  
 			        	
+			        	// Connect to database again to query all information about the bus from this ticket
 			        	try {
 							Connection conn3 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 							Statement stmt3 = conn3.createStatement();
@@ -167,6 +181,7 @@ public class displayTicket extends JFrame {
 				        		busDbDestination = rset3.getString("going_to");
 					        }  
 				        	
+				        	// Close the connection
 				        	rset3.close();
 					        stmt3.close();
 							conn3.close();
@@ -175,6 +190,7 @@ public class displayTicket extends JFrame {
 					    	  ex.printStackTrace();
 					      }
 
+			        	// Close the connection
 			        	rset2.close();
 				        stmt2.close();
 						conn2.close();
@@ -183,6 +199,7 @@ public class displayTicket extends JFrame {
 				    	  ex.printStackTrace();
 				      }
 		        	
+		        	// Close the connection
 		        	rset.close();
 			        stmt.close();
 					conn.close();
@@ -191,6 +208,7 @@ public class displayTicket extends JFrame {
 			    	  ex.printStackTrace();
 			      }
 				
+				// Display all the information gathered from database into textFields 
 				ticketIDlbl.setText(String.valueOf(ticketID));
 				busIDlbl.setText(String.valueOf(ticketDbBusID));
 				busNumberlbl.setText(ticketDbBusNumber);
@@ -216,8 +234,10 @@ public class displayTicket extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		btnBack.setFont(new Font("Arial", Font.PLAIN, 14));
 
+		// Back button listener
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// When closing this frame refresh the buses and the timetable, so the information there is accurate and up-to-date
 				mainWindow.refreshBuses();
 				mainWindow.refreshTimetable();
 				finish();
@@ -333,18 +353,29 @@ public class displayTicket extends JFrame {
 		journeyLbl.setBounds(129, 95, 293, 17);
 		
 		contentPane.add(journeyLbl);
+		
+		// Save PDF button listener
 		btnSavePdf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// Try to create new document using the iText API to save the ticket into PDF format in users machine
 				try {
+					// File name 
 					FILE = "./"+ticketID+".pdf";
+					// Create new instance of document
 					Document document = new Document();
+					// Output stream for the document 
 					PdfWriter.getInstance(document, new FileOutputStream(FILE));
+					// Open the document
 					document.open();
+					// Add metadata to document (seperate method)
 					addMetaData(document);
+					// Add page into the document (seperate method)
 					addPage(document);
+					// Finally close the document
 					document.close();
 					
+					// Display message to user and close the frame
 					JOptionPane.showMessageDialog(null, ticketID+".pdf successfully saved");
 					finish();
 				} catch (FileNotFoundException e) {
@@ -361,6 +392,7 @@ public class displayTicket extends JFrame {
 		contentPane.add(btnSavePdf);
 	}
 	
+	// Method to dispose the frame
 	public void finish(){
 		this.dispose();
 	}
@@ -370,21 +402,26 @@ public class displayTicket extends JFrame {
     // Reader
     // under File -> Properties
     private static void addMetaData(Document document) {
+    		// Applying metadata for the document
             document.addTitle("Ticket ID - "+id);
             document.addKeywords("Java, MySQL, Project, IrishBus, App, Final, Year");
             document.addAuthor("Adrian Sypos");
             document.addCreator("Adrian Sypos");
     }
 
+    // Method to add a page into document
     private static void addPage(Document document) throws DocumentException {
+    		// Create new instance of paragraph
             Paragraph preface = new Paragraph();
             
+            // add empty lines and all the information onto the page inside paragraph
             addEmptyLine(preface, 1);
             preface.add(new Paragraph("Ticket ID - "+id, catFont));
 
             addEmptyLine(preface, 1);
             preface.add(new Paragraph("Ticket generated autimatically on " + new Date(),smallBold));
             
+            // Using all the data from database to represent a ticket
             addEmptyLine(preface, 3);
             preface.add(new Paragraph("Ticket ID - "+String.valueOf(id), smallBold));
             preface.add(new Paragraph("Bus ID - "+String.valueOf(ticketDbBusID), smallBold));
@@ -399,11 +436,13 @@ public class displayTicket extends JFrame {
             addEmptyLine(preface, 8);
             preface.add(new Paragraph("Thank you for buying the ticket with IrishBusApp", redFont));
 
+            // Add the paragraph to the document
             document.add(preface);
             // Start a new page
             document.newPage();
     }
 
+    // Method to add a new empty line into a document
     private static void addEmptyLine(Paragraph paragraph, int number) {
             for (int i = 0; i < number; i++) {
                     paragraph.add(new Paragraph(" "));

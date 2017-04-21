@@ -44,9 +44,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+//SuppressWarnings to get rid of warnings
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class mainWindow extends JFrame {
 
+	// Declaring all class variables
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private static ArrayList<String> sourceStations = new ArrayList<String>();
@@ -87,6 +89,7 @@ public class mainWindow extends JFrame {
 	private static JLabel lblStudent = new JLabel("Student:");
 	private JTextField textField;
 	
+	// Variables for database connection
 	private static String dbHost = "sql8.freemysqlhosting.net";
 	private static String dbPort = "3306";
 	private static String dbNameCon = "sql8160217";
@@ -101,6 +104,7 @@ public class mainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
+				// BeautyEye API to make the application look better
 				try {
 					org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
 					UIManager.put("RootPane.setupButtonVisible", false);
@@ -109,9 +113,13 @@ public class mainWindow extends JFrame {
 					e1.printStackTrace();
 				}
 				
+				// Create instance of main window
 				try {
+					// When creating frame directlyl, not through login frame, set user id to 0 and disable admin privileges 
 					mainWindow frame = new mainWindow(false, 0);
+					// Position the frame in center of screen
 					frame.setLocationRelativeTo(null);
+					// Set frame visible
 					frame.setVisible(true);
 					
 					} catch (Exception e) {
@@ -180,9 +188,11 @@ public class mainWindow extends JFrame {
 		
 		panel_1.add(scrollPane);
 		
+		// Add button listener
 		JButton btnAddBus = new JButton("Add");
 		btnAddBus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Creane a new instance of addBus frame, set its position to the center of screen and make it visible
 				addBus frame = new addBus(if_admin);
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
@@ -192,24 +202,33 @@ public class mainWindow extends JFrame {
 		btnAddBus.setBounds(10, 11, 89, 23);
 		panel_1.add(btnAddBus);
 		
+		// Delete bus listener
 		JButton btnDeleteBus = new JButton("Delete");
 		btnDeleteBus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// Get the row number from table of selected bus
 				int row = table.getSelectedRow();
 
+				// If user didnt select any bus from the table
 				if(row == -1){
+					// Display message to user
 					JOptionPane.showMessageDialog(null, "Select row from the table below first!");
 				}// if row not selected
+				// if user selected some entry from the table do the following
 				else{
+					// Ask user if he wants to delese this particular bus, as a precaution 
 					int dialogButton = JOptionPane.YES_NO_OPTION;
 					int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the bus? \n ","Warning", dialogButton);
+					// If user selected yes from the pop up do the following
 					if(dialogResult == JOptionPane.YES_OPTION){
 
+						// Connect to database to delete bus from bus_table
 						try {
 							Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 							Statement stmt = conn.createStatement();
 							
+							// statement to delete bus from bus_table
 							String strSelect = "delete from bus_table where bus_id like " + table.getValueAt(table.getSelectedRow(), 0);
 					 
 					        stmt.executeUpdate(strSelect);
@@ -217,6 +236,7 @@ public class mainWindow extends JFrame {
 					        refreshBuses();
 					        refreshTimetable();
 					        
+					        // Close the connection
 					        stmt.close();
 							conn.close();
 							
@@ -230,21 +250,28 @@ public class mainWindow extends JFrame {
 		btnDeleteBus.setBounds(109, 11, 89, 23);
 		panel_1.add(btnDeleteBus);
 		
+		// Update button listener
 		JButton btnUpdateBus = new JButton("Update");
 		btnUpdateBus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
+				// Get the row number from table of selected bus
 				int row = table.getSelectedRow();
 
+				// If user didnt select any bus from the table
 				if(row == -1){
 					JOptionPane.showMessageDialog(null, "Select row from the table below first!");
 				}// if row not selected
 				else{
+					// Ask user if he wants to update this particular bus, as a precaution 
 					int dialogButton = JOptionPane.YES_NO_OPTION;
 					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to update this bus? \n ","Warning", dialogButton);
+					// If user selected yes
 					if(dialogResult == JOptionPane.YES_OPTION){
 
+						// Key is the bus id, which we pass as a parameter in overloaded constructor while creating updateBus instance
 						int key = (int) table.getValueAt(table.getSelectedRow(), 0);
+						// create instance of updateBus, and pass the key which is bus id to be updated
 						updateBus frame = new updateBus(if_admin, key);
 						frame.setVisible(true);
 						frame.setLocationRelativeTo(null);
@@ -257,9 +284,11 @@ public class mainWindow extends JFrame {
 		btnUpdateBus.setBounds(208, 11, 89, 23);
 		panel_1.add(btnUpdateBus);
 		
+		// Refresh button listener
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// Method to refresh the buses for the admin panel
 				refreshBuses();
 			}
 		});
@@ -274,9 +303,11 @@ public class mainWindow extends JFrame {
 		
 		panel_2.add(logoTimetable);
 		
+		// Refresh button listener
 		JButton btnNewButton_1 = new JButton("");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// Method to refresh the buses from the timetable (from database)
 				refreshTimetable();
 			}
 		});
@@ -327,8 +358,11 @@ public class mainWindow extends JFrame {
 		
 		comboBox_2.setBounds(114, 95, 420, 20);
 		panel.add(comboBox_2);
+		
+		// Select button listener
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// enable the panel method if user selects/enters all required fields
 				enablePanel();
 			}
 		});
@@ -337,6 +371,7 @@ public class mainWindow extends JFrame {
 		panel.add(btnSelect);
 		btnSelect.setEnabled(false);
 		
+		// Refresh the buses from database on frame load
 		refreshBuses();
 		
 		//////////////////////////////////////////////
@@ -350,16 +385,19 @@ public class mainWindow extends JFrame {
 				btnSelect.setEnabled(false);
 				disablePanel();
 				
+				// If the source station is not the same as destination station then proceed
 				if(!comboBox.getSelectedItem().equals(comboBox_1.getSelectedItem())){
 					System.out.println(comboBox.getSelectedItem() + "  " + comboBox_1.getSelectedItem());
 					
-					
+					// Connect to database to look for connections between source and destination stations
 					try {
 						Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 						Statement stmt = conn.createStatement();
 						
+						//SQL query string
 						String strSelect = "select * from bus_table where depart_from LIKE '" + comboBox.getSelectedItem() + "' and going_to LIKE '" + comboBox_1.getSelectedItem() + "'";
 				 
+						//Execure the query
 				        ResultSet rset = stmt.executeQuery(strSelect);
 				 
 			        	while(rset.next()) {
@@ -372,12 +410,16 @@ public class mainWindow extends JFrame {
 				        	
 				        	String availableBus = tempID + " : " + tempBusNo + " : " + tempDepartFrom + " - " + tempGoingTo + " @ " + tempBusTime;
 				        	
+				        	// Add each bus to list of available buses
 				        	availableBuses.add(availableBus);
+				        	// Enable button select if buses have been found
 				        	btnSelect.setEnabled(true);
 
+				        	// Populate the combobox with available buses array 
 				        	comboBox_2.setModel(new DefaultComboBoxModel(availableBuses.toArray()));
 				        }  
 			        	
+			        	// Close the connection
 			        	rset.close();
 				        stmt.close();
 						conn.close();
@@ -397,6 +439,7 @@ public class mainWindow extends JFrame {
 			}
 		});
 		
+		// Using the jDatePicker API creating model and date panel
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model);
 		panel_4.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
@@ -418,6 +461,7 @@ public class mainWindow extends JFrame {
 		
 		comboBox_adult.setBounds(85, 47, 57, 20);
 		panel_4.add(comboBox_adult);
+		// When user changes the selected item on adulyComboBox, calculate how much the ticket will cost automatically
 		comboBox_adult.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		        double total = 0.00;
@@ -433,6 +477,7 @@ public class mainWindow extends JFrame {
 		    }
 		});
 		
+		// When user changes the selected item on studentComboBox, calculate how much the ticket will cost automatically
 		comboBox_student.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		        double total = 0.00;
@@ -462,6 +507,7 @@ public class mainWindow extends JFrame {
 		panel_4.add(datePicker);
 		datePicker.getJFormattedTextField().setBounds(0, 0, 229, 23);
 
+		// Populate adult and student dropboxes with passengers quantity to be selected by users
 		for(int i=0;i<=15;i++){
 			comboBox_adult.addItem(new Integer(i));
 			comboBox_student.addItem(new Integer(i));
@@ -471,10 +517,12 @@ public class mainWindow extends JFrame {
 		model.setDate(2017, 3, 24);
 		model.setSelected(true);
 		
+		// Buy tickets listener
 		JButton btnNewButton = new JButton("Buy tickets");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// If at least one passenger has been selected either adult or student proceed, if not display error
 				if(!comboBox_student.getSelectedItem().equals(0) || !comboBox_adult.getSelectedItem().equals(0)){
 					String[] selected = comboBox_2.getSelectedItem().toString().split(" : "); // <-- selected[0] contains the bus id that we want to book the ticket for..
 					
@@ -484,6 +532,7 @@ public class mainWindow extends JFrame {
 					String going_to = null;
 					String bus_time = null;*/
 					
+					// Connect to database to get bus information
 					try {
 						Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 						Statement stmt = conn.createStatement();
@@ -524,6 +573,7 @@ public class mainWindow extends JFrame {
 			        	int tempTicketID = ThreadLocalRandom.current().nextInt(44444444, 999999999 + 1);
 
 			        	//System.out.println(dbBusID+"\n"+dbBusNumber+"\n"+dbJourneyDate+"\n"+dbAdult+"\n"+dbStudent+"\n"+dbUserID+"\n"+dbPrice);
+			        	// Connect to database to insert new ticket into tickets table using all the details provided by user and aquired from another queries
 			        	try {
 							Connection conn2 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 							Statement stmt2 = conn2.createStatement();
@@ -534,16 +584,22 @@ public class mainWindow extends JFrame {
 
 					        stmt2.executeUpdate(strSelect2);
 					        
+					        // Using Clipboard class to manipulate users clipboard, so we can automatically save the ticket id for users clipboard
 					        StringSelection selection = new StringSelection(String.valueOf(tempTicketID));
+					        // Get users clipboard
 					        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					        // Set users clipboard to out selection (which is the ticket id)
 					        clipboard.setContents(selection, selection);
 					        
+					        // Message for user to show ticket id and inform about clipboard
 					        JOptionPane.showMessageDialog(null, "Thanks for buying the ticket \nMake sure to remember or save your ticket ID \nTicket ID - "
 					        										+tempTicketID+"\nIt has been automatically copied to your clipboard (ctrl+v)");
+					        // Creating new instance of display ticket frame, passing ticket it as constructor param
 					        displayTicket frame = new displayTicket(tempTicketID);
 					        frame.setVisible(true);
 					        frame.setLocationRelativeTo(null);
-
+					        
+					        // Closing connection
 					        stmt2.close();
 							conn2.close();
 					        
@@ -551,7 +607,7 @@ public class mainWindow extends JFrame {
 					    	  ex.printStackTrace();
 					      } // end of try/catch
 			        	
-
+			        	// Closing connection
 			        	rset.close();
 				        stmt.close();
 						conn.close();
@@ -561,18 +617,23 @@ public class mainWindow extends JFrame {
 				      }
 				}
 				else{
+					// If user didn't select any passengers, highlight labels 
 					lblStudent.setForeground(Color.cyan);
 					lblAdult.setForeground(Color.cyan);
+					// If user didn't select any passengers display message
 					JOptionPane.showMessageDialog(null, "Please select passengers amount");
 				}
 			}
 		});
 		btnNewButton.setBounds(409, 11, 105, 23);
 		panel_4.add(btnNewButton);
+		// Clear button listener
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// Set adult and student quantity to 0
 				comboBox_adult.setSelectedItem(0);
 				comboBox_student.setSelectedItem(0);
+				// Set date on the jDatePicker to 24/03/2017
 				model.setDate(2017, 3, 24);
 			}
 		});
@@ -620,31 +681,41 @@ public class mainWindow extends JFrame {
 		panel_3.add(textField);
 		textField.setColumns(10);
 		
+		// Search button listener
 		JButton btnNewButton_2 = new JButton("Search");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// Method variable declaration
 				int ticketID;
 				
+				// Set the ticket it to whatever user typed in the textField
 				ticketID = Integer.parseInt(textField.getText());
 				
+				// Connect to database to look for the ticket
 				try {
 					Connection conn3 = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
 					Statement stmt3 = conn3.createStatement();
 					
+					// String query
 					String strSelect3 = "select * from ticket where ticket_id="+ticketID;
 			 
+					// Execute statement
 			        ResultSet rset3 = stmt3.executeQuery(strSelect3);
 			 
+			        // If the ticket has been found
 		        	if(rset3.next()){
+		        		// Create new instance of display ticket frame passing ticket it as constructor param
 		        		displayTicket frame = new displayTicket(ticketID);
 		        		frame.setVisible(true);
 		        		frame.setLocationRelativeTo(null);
 		        	}
 		        	else{
+		        		// If ticket has not been found display error message to user
 		        		JOptionPane.showMessageDialog(null, "Sorry, ticket with ID "+ticketID+" doesn't exist.");
 		        	}
 		        	
+		        	// Close connection
 		        	rset3.close();
 			        stmt3.close();
 					conn3.close();
@@ -665,12 +736,15 @@ public class mainWindow extends JFrame {
 		lblTicketId.setBounds(115, 85, 226, 30);
 		panel_3.add(lblTicketId);
 		
+		// disable the panel
 		disablePanel();
     }
 	
+	// Method to populate the jTable with the database details from result set
 	public static DefaultTableModel buildTableModel(ResultSet rs)
 	        throws SQLException {
 
+		// Get the metadata from the result set for column titles
 	    ResultSetMetaData metaData = rs.getMetaData();
 
 	    // names of columns
@@ -689,6 +763,7 @@ public class mainWindow extends JFrame {
 	        }
 	        data.add(vector);
 	    }
+	    // Return built data model with column names and data from databases result set
 	    return new DefaultTableModel(data, columnNames);
 	}
 	
@@ -722,6 +797,9 @@ public class mainWindow extends JFrame {
 	      }
 	}
 	
+	//////////////////////////////////////////////
+	///////METHOD TO REFRESH THE timetable////////
+	/////////////////////////////////////////////
 	public static void refreshTimetable(){
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
@@ -749,11 +827,13 @@ public class mainWindow extends JFrame {
 	      }
 	}
 	
+	// Method to dispose the frame
 	public void finish(){
 		this.setVisible(false);
 		this.dispose();
 	}
 	
+	// Method to populate the combo boxes for source and destination stations from database
 	public static void populate(){
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://"+dbHost+":"+dbPort+"/"+dbNameCon+"?useSSL=false", dbUsername, dbPassword); 
@@ -763,21 +843,27 @@ public class mainWindow extends JFrame {
 	 
 	        ResultSet rset = stmt.executeQuery(strSelect);
 	 
+	        // <First make sure the combo boxes are empty
 	        sourceStations.clear();
 	        destinationStations.clear();
 	        
+	        // Get the data from database
 	        while(rset.next()) {
+	        	// Make sure not to have duplicates in source stations 
 	        	if(!sourceStations.contains(rset.getString("depart_from"))){
 	        		sourceStations.add(rset.getString("depart_from"));
 	        	}
+	        	// Make sure not to have duplicates in destination stations 
 	        	if(!destinationStations.contains(rset.getString("going_to"))){
 	        		destinationStations.add(rset.getString("going_to"));
 	        	}
 	        }
 	        
+	        // Populate the combo boxes with sourceStations and destinationStations arrays
 	        comboBox.setModel(new DefaultComboBoxModel(sourceStations.toArray()));
 			comboBox_1.setModel(new DefaultComboBoxModel(destinationStations.toArray()));
 			
+			// Close the connection
 			rset.close();
 	        stmt.close();
 			conn.close();
@@ -787,7 +873,9 @@ public class mainWindow extends JFrame {
 	      }
 	}
 	
+	// Disabling the lower panel on Reservation tab 
 	public void disablePanel(){
+		// Really handy function to iterate trough panels components and set them all disabled
 		for (Component cp : panel_4.getComponents() ){
 	        cp.setEnabled(false);
 		}
@@ -800,7 +888,9 @@ public class mainWindow extends JFrame {
 		datePicker.getJFormattedTextField().setEnabled(false);
 	}
 	
+	// Enabling the lower panel on Reservation tab
 	public void enablePanel(){
+		// Really handy function to iterate trough panels components and set them all enabled
 		for (Component cp : panel_4.getComponents() ){
 	        cp.setEnabled(true);
 		}
@@ -812,25 +902,33 @@ public class mainWindow extends JFrame {
 		datePicker.getJFormattedTextField().setEnabled(true);
 	}
 
+	// method to round any double value to whatever decimal places
 	public static double round(double value, int places) {
+		// If places are less than 0 throw exception
 	    if (places < 0) throw new IllegalArgumentException();
 
 	    long factor = (long) Math.pow(10, places);
 	    value = value * factor;
 	    long tmp = Math.round(value);
+	    // Return rounded value 
 	    return (double) tmp / factor;
 	}
 
+	// Method to calculate total price of ticket based on passengers quantity
 	public void calculateTotal(){
+		// Method variables
         double totalPrice = 0.00;
         double student = 0.00;
         double adult = 0.00;
         
+        // Parse to double from String from labels 
         student = Double.parseDouble(studentPrice.getText());
         adult = Double.parseDouble(adultPrice.getText());
         
+        // Sum up the total price
         totalPrice = student + adult;
         
+        // display total price for user
         totalPriceLbl.setText(""+totalPrice);
 	}
-}
+}//end of class

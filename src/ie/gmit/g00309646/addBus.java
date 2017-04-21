@@ -34,6 +34,8 @@ public class addBus extends JFrame {
 	private static JComboBox comboBox = new JComboBox();
 	private static JComboBox comboBox_1 = new JComboBox();
 	private static JComboBox comboBox_2 = new JComboBox();
+	
+	// Variables for database connection
 	private static String dbHost = "sql8.freemysqlhosting.net";
 	private static String dbPort = "3306";
 	private static String dbNameCon = "sql8160217";
