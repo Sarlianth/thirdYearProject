@@ -192,7 +192,7 @@ public class login extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// popup message to thank user for using this software
-				JOptionPane.showMessageDialog(null, "Thank you for using this software.");
+				JOptionPane.showMessageDialog(null, "Thank you for using IrishBusApp.");
 				System.exit(0);
 			}
 		});
